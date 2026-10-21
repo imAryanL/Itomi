@@ -5,10 +5,14 @@ import SwiftData
 
 struct CounterView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
 
     let project: Project
     @State private var part: Part
     @State private var showingAddPart = false
+    @State private var showingPartDone = false
+    @State private var showingFinish = false
+    @State private var welcomeBackText: String? = nil
     @AppStorage("keepScreenOn") private var keepScreenOn = true
 
     init(project: Project, part: Part) {
@@ -18,7 +22,24 @@ struct CounterView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            roundCard
+            if let welcomeBackText {
+                WelcomeBackLine(text: welcomeBackText)
+                    .transition(.opacity)
+            }
+
+            if showingPartDone {
+                PartDoneCard(
+                    part: part,
+                    nextPart: nextPart,
+                    onNext: goToNextPart,
+                    onFinish: finishProject,
+                    onKeepCounting: hidePartDone
+                )
+                .transition(.opacity)
+            } else {
+                roundCard
+                    .transition(.opacity)
+            }
 
             if part.isCopyFinished && part.currentCopy < part.copies {
                 Button("Start \(part.name) \(part.currentCopy + 1) of \(part.copies)") {
@@ -33,6 +54,7 @@ struct CounterView: View {
             stitchCard
 
             Button("Undo", systemImage: "arrow.uturn.backward") {
+                showingPartDone = false
                 part.undo()
                 Haptics.medium()
                 saveChanges()
@@ -55,9 +77,20 @@ struct CounterView: View {
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
         }
+        // After the finish screen, go back to where the counter was opened from
+        .fullScreenCover(isPresented: $showingFinish, onDismiss: { dismiss() }) {
+            FinishView(project: project)
+        }
         // Keep the screen on while counting
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = keepScreenOn
+            welcomeBackText = makeWelcomeBackText()
+        }
+        // Hide the welcome line once counting starts again
+        .onChange(of: part.lastCountedAt) {
+            withAnimation {
+                welcomeBackText = nil
+            }
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
@@ -67,9 +100,17 @@ struct CounterView: View {
     // The big plum card: tap anywhere on it to add a round
     var roundCard: some View {
         Button {
+            let wasDone = part.isDone
             part.addRound()
             playRoundHaptic()
             saveChanges()
+
+            // This tap finished the whole part: show the done card
+            if project.usesParts && wasDone == false && part.isDone {
+                withAnimation {
+                    showingPartDone = true
+                }
+            }
         } label: {
             VStack(spacing: 8) {
                 Text(part.countWord.uppercased())
@@ -156,6 +197,7 @@ struct CounterView: View {
                 ForEach(project.sortedParts) { otherPart in
                     Button {
                         part = otherPart
+                        showingPartDone = false
                         Haptics.light()
                     } label: {
                         if otherPart == part {
@@ -187,6 +229,57 @@ struct CounterView: View {
                 .font(.headline)
                 .fontWeight(.semibold)
         }
+    }
+
+    // The first part that isn't done yet, in list order
+    var nextPart: Part? {
+        for otherPart in project.sortedParts {
+            if otherPart != part && otherPart.isDone == false {
+                return otherPart
+            }
+        }
+        return nil
+    }
+
+    // Switch the counter to the next part
+    func goToNextPart() {
+        guard let next = nextPart else {
+            return
+        }
+        Haptics.light()
+        withAnimation {
+            part = next
+            showingPartDone = false
+        }
+    }
+
+    // Mark the project finished and show the finish screen
+    func finishProject() {
+        project.isFinished = true
+        project.finishedAt = Date.now
+        Haptics.success()
+        saveChanges()
+        showingFinish = true
+    }
+
+    // Back to the counter, past the planned rounds
+    func hidePartDone() {
+        Haptics.light()
+        withAnimation {
+            showingPartDone = false
+        }
+    }
+
+    // "Last counted 3 days ago", only if the project wasn't counted today
+    func makeWelcomeBackText() -> String? {
+        guard let lastCounted = project.lastCountedAt else {
+            return nil
+        }
+        if Calendar.current.isDateInToday(lastCounted) {
+            return nil
+        }
+        let when = lastCounted.formatted(.relative(presentation: .named))
+        return "Last counted \(when)"
     }
 
     // Heavy buzz for a round, or a double buzz when it hits the planned rounds

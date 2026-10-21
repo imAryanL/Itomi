@@ -19,7 +19,7 @@ Tick a box when Aryan has seen it working.
 
 **Checkpoint:** create `qa-tester` subagent, full test pass, TestFlight build on Aryan's iPhone.
   *Status:* qa-tester pass done Oct 20 (all flows pass). Running on Aryan's iPhone 11 straight from Xcode (Oct 21). TestFlight waits until outside testers.
-- [ ] **7b. Amigurumi touches** (free, what sets Itomi apart):
+- [x] **7b. Amigurumi touches** (free, what sets Itomi apart):
   "Head done → next: Body" moment when a part hits its last round (loop draws itself, one tap to the next part);
   "Welcome back" line on the counter after a day or more away.
 

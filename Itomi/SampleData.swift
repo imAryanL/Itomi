@@ -26,6 +26,8 @@ enum SampleData {
         let scarf = Project(name: "Winter scarf", hookSize: "5.0 mm", yarn: "Merino, sage", usesParts: false, countsInRounds: false)
         scarf.usesNeedles = true
         addPart(to: scarf, name: "Winter scarf", rounds: nil, at: 64)
+        // Last counted 3 days ago, to show the "Welcome back" line
+        scarf.parts.first?.lastCountedAt = Calendar.current.date(byAdding: .day, value: -3, to: Date.now)
         modelContext.insert(scarf)
 
         // Finished (the Kitty has no photo, to show the loop tile)

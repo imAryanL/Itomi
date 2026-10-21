@@ -94,6 +94,24 @@ final class Project {
 
     // MARK: - Progress
 
+    // When any part of this project was last counted
+    var lastCountedAt: Date? {
+        var latest: Date? = nil
+        for part in parts {
+            guard let countedAt = part.lastCountedAt else {
+                continue
+            }
+            if let current = latest {
+                if countedAt > current {
+                    latest = countedAt
+                }
+            } else {
+                latest = countedAt
+            }
+        }
+        return latest
+    }
+
     // The part to pick up from: the last one counted (unless it's done), else the first one not done
     var currentPart: Part? {
         var lastCounted: Part? = nil
