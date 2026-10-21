@@ -12,6 +12,7 @@ struct ProjectRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(project.name)
                     .font(.headline)
+                    .fontWeight(.semibold)
                 Text(project.progressSummary)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

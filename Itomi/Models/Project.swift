@@ -127,6 +127,10 @@ final class Project {
             return "No parts yet"
         }
         if part.lastCountedAt == nil {
+            // Earlier parts are done, this one is next
+            if usesParts && part != sortedParts.first {
+                return "Up next: \(part.currentCopyName)"
+            }
             return "Not started"
         }
         if usesParts {

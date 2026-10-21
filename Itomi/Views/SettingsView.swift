@@ -22,15 +22,18 @@ struct SettingsView: View {
                 Section {
                     Toggle("Haptics", isOn: $hapticsOn)
                     Toggle("Keep screen on while counting", isOn: $keepScreenOn)
+                } header: {
+                    ListSectionTitle(text: "Counter")
                 }
 
                 Section {
                     backupRow
                     Button("Restore from a backup") {
                         showingRestorePicker = true
+                        Haptics.light()
                     }
                 } header: {
-                    Text("Your data")
+                    ListSectionTitle(text: "Your data")
                 } footer: {
                     Text("A backup is one file with all your projects and photos. Save it to Files or send it to yourself.")
                 }
@@ -45,10 +48,18 @@ struct SettingsView: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color.warmBackground)
+            // Tick when a switch changes (turning Haptics off stays quiet)
+            .onChange(of: hapticsOn) {
+                Haptics.light()
+            }
+            .onChange(of: keepScreenOn) {
+                Haptics.light()
+            }
             .navigationTitle("Settings")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
+                        Haptics.light()
                         dismiss()
                     }
                 }
@@ -81,6 +92,7 @@ struct SettingsView: View {
             ShareLink(item: backupURL) {
                 Text("Back up projects")
             }
+            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
         } else {
             Text("Back up projects")
                 .foregroundStyle(.secondary)
@@ -93,6 +105,7 @@ struct SettingsView: View {
         case .success(let url):
             do {
                 let added = try Backup.restore(from: url, into: modelContext, existing: allProjects)
+                Haptics.success()
                 if added == 0 {
                     restoreMessage = "Everything in that backup is already here."
                 } else if added == 1 {

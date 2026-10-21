@@ -25,7 +25,8 @@ struct FinishView: View {
 
             VStack(spacing: 8) {
                 Text("\(project.name) is finished")
-                    .font(.largeTitle.bold())
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                 Text("Every \(project.countWord.lowercased()) counted. Time to show it off.")
                     .foregroundStyle(.secondary)
@@ -46,20 +47,25 @@ struct FinishView: View {
                 if project.photo == nil {
                     Label("Add a photo of it", systemImage: "camera")
                         .font(.headline)
+                        .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                 } else {
                     Label("Change photo", systemImage: "camera")
                         .font(.headline)
+                        .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                 }
             }
             .buttonStyle(.glassProminent)
             .controlSize(.extraLarge)
+            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
 
             Button("Done") {
+                Haptics.light()
                 dismiss()
             }
             .font(.headline)
+            .fontWeight(.semibold)
             .controlSize(.large)
         }
         .padding()
@@ -104,7 +110,8 @@ struct StatTile: View {
     var body: some View {
         VStack(spacing: 2) {
             Text("\(number)")
-                .font(.title.bold())
+                .font(.title)
+                .fontWeight(.bold)
                 .foregroundStyle(.tint)
             Text(label)
                 .font(.subheadline)

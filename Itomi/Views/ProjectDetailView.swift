@@ -21,27 +21,35 @@ struct ProjectDetailView: View {
             .listRowInsets(EdgeInsets())
 
             if project.usesParts {
-                Section("Parts") {
+                Section {
                     ForEach(project.sortedParts) { part in
                         NavigationLink {
                             CounterView(project: project, part: part)
                         } label: {
                             PartRow(part: part)
                         }
+                        .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
                     }
                     Button("Add part", systemImage: "plus") {
                         showingAddPart = true
+                        Haptics.light()
                     }
+                } header: {
+                    ListSectionTitle(text: "Parts")
                 }
             } else if let onlyPart = project.sortedParts.first {
-                Section("Progress") {
-                    PartRow(part: onlyPart)
+                Section {
+                    CountCard(part: onlyPart)
+                } header: {
+                    ListSectionTitle(text: "Progress")
                 }
             }
 
-            Section("Notes") {
+            Section {
                 TextField("Notes", text: $project.notes, prompt: Text("Anything to remember"), axis: .vertical)
                     .lineLimit(3...)
+            } header: {
+                ListSectionTitle(text: "Notes")
             }
         }
         .scrollContentBackground(.hidden)
@@ -88,12 +96,14 @@ struct ProjectDetailView: View {
                 Button("Move back to In progress", systemImage: "arrow.uturn.backward") {
                     project.isFinished = false
                     project.finishedAt = nil
+                    Haptics.light()
                     saveChanges()
                 }
             } else {
                 Button("Finish project", systemImage: "checkmark.circle") {
                     project.isFinished = true
                     project.finishedAt = Date.now
+                    Haptics.success()
                     saveChanges()
                     showingFinish = true
                 }
@@ -106,11 +116,15 @@ struct ProjectDetailView: View {
             PhotosPicker(selection: $pickedPhoto, matching: .images) {
                 ProjectThumbnail(project: project, size: 80)
             }
+            // Only the photo opens the picker, not the whole row
+            .buttonStyle(.borderless)
+            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
             .accessibilityLabel("Change photo")
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(project.name)
-                    .font(.largeTitle.bold())
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
                 HStack {
                     if project.hookSize.isEmpty == false {
                         DetailChip(text: project.toolText)
@@ -133,10 +147,12 @@ struct ProjectDetailView: View {
             } label: {
                 Text(continueTitle(for: part))
                     .font(.headline)
+                    .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.glassProminent)
             .controlSize(.extraLarge)
+            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
             .padding(.horizontal)
         }
     }
@@ -177,5 +193,47 @@ struct DetailChip: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
             .background(.background, in: Capsule())
+    }
+}
+
+// Big count for a project without parts, e.g. "Row 64 · Last counted today"
+struct CountCard: View {
+    let part: Part
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text("\(part.countWord) \(part.currentRound)")
+                    .font(.system(size: 40, design: .rounded))
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.accent)
+                    .contentTransition(.numericText())
+                if let planned = part.plannedRounds {
+                    Text("of \(planned)")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Text(lastCountedText)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            // Only show a bar when there's a goal to fill it toward
+            if part.plannedRounds != nil {
+                ThickProgressBar(value: part.progress, isDone: part.isDone)
+            }
+        }
+        .padding(.vertical, 6)
+        .accessibilityElement(children: .combine)
+    }
+
+    // e.g. "Last counted 5 minutes ago", or "Not started yet"
+    var lastCountedText: String {
+        guard let date = part.lastCountedAt else {
+            return "Not started yet"
+        }
+        let when = date.formatted(.relative(presentation: .named))
+        return "Last counted \(when)"
     }
 }

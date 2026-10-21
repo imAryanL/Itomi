@@ -25,6 +25,8 @@ struct ItomiApp: App {
                 }
             }
             .fontDesign(.rounded)
+            // Every word a little heavier than iOS's regular, so the app reads sturdy
+            .fontWeight(.medium)
             .tint(Color.accent)
         }
         // Save projects (and their parts and stitch targets) on the phone

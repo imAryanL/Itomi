@@ -16,7 +16,8 @@ struct FirstProjectView: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Your first project")
-                        .font(.largeTitle.bold())
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                     Text("What are you working on right now? You can change all of this later.")
                         .foregroundStyle(.secondary)
                 }
@@ -48,12 +49,20 @@ struct FirstProjectView: View {
         }
         .scrollContentBackground(.hidden)
         .background(Color.warmBackground)
+        // Tick when the hook/needles choice or switch changes
+        .onChange(of: usesNeedles) {
+            Haptics.light()
+        }
+        .onChange(of: countsInRounds) {
+            Haptics.light()
+        }
         .safeAreaInset(edge: .bottom) {
             Button {
                 createProject()
             } label: {
                 Text("Start counting")
                     .font(.headline)
+                    .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.glassProminent)
@@ -83,6 +92,7 @@ struct FirstProjectView: View {
         } catch {
             print("Couldn't save project: \(error)")
         }
+        Haptics.success()
         onProjectCreated(project)
     }
 }

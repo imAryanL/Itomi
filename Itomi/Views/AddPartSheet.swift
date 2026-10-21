@@ -31,11 +31,19 @@ struct AddPartSheet: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color.warmBackground)
+            // Tick on every stepper tap
+            .onChange(of: copies) {
+                Haptics.light()
+            }
+            .onChange(of: rounds) {
+                Haptics.light()
+            }
             .navigationTitle("Add a part")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
+                        Haptics.light()
                         dismiss()
                     }
                 }
@@ -65,6 +73,7 @@ struct AddPartSheet: View {
         } catch {
             print("Couldn't save part: \(error)")
         }
+        Haptics.success()
         dismiss()
     }
 }

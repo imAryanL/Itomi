@@ -9,9 +9,6 @@ struct CounterView: View {
     let project: Project
     @State private var part: Part
     @State private var showingAddPart = false
-    @State private var tapCount = 0
-    @State private var removeCount = 0
-    @AppStorage("hapticsOn") private var hapticsOn = true
     @AppStorage("keepScreenOn") private var keepScreenOn = true
 
     init(project: Project, part: Part) {
@@ -26,6 +23,7 @@ struct CounterView: View {
             if part.isCopyFinished && part.currentCopy < part.copies {
                 Button("Start \(part.name) \(part.currentCopy + 1) of \(part.copies)") {
                     part.startNextCopy()
+                    Haptics.success()
                     saveChanges()
                 }
                 .buttonStyle(.glassProminent)
@@ -36,6 +34,7 @@ struct CounterView: View {
 
             Button("Undo", systemImage: "arrow.uturn.backward") {
                 part.undo()
+                Haptics.medium()
                 saveChanges()
             }
             .buttonStyle(.glass)
@@ -56,8 +55,6 @@ struct CounterView: View {
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
         }
-        .sensoryFeedback(.increase, trigger: tapCount)
-        .sensoryFeedback(.decrease, trigger: removeCount)
         // Keep the screen on while counting
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = keepScreenOn
@@ -71,15 +68,17 @@ struct CounterView: View {
     var roundCard: some View {
         Button {
             part.addRound()
-            playTapHaptic()
+            playRoundHaptic()
             saveChanges()
         } label: {
             VStack(spacing: 8) {
                 Text(part.countWord.uppercased())
                     .font(.headline)
+                    .fontWeight(.semibold)
                     .opacity(0.8)
                 Text("\(part.currentRound)")
-                    .font(.system(size: 160, weight: .bold, design: .rounded))
+                    .font(.system(size: 160, design: .rounded))
+                    .fontWeight(.bold)
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                     .contentTransition(.numericText())
@@ -110,7 +109,8 @@ struct CounterView: View {
                     .foregroundStyle(.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text("\(part.currentStitch)")
-                        .font(.largeTitle.bold())
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                         .contentTransition(.numericText())
                     if let expected = part.expectedStitches(forRound: part.currentRound) {
                         Text("of \(expected)")
@@ -123,7 +123,7 @@ struct CounterView: View {
 
             Button("Remove stitch", systemImage: "minus") {
                 part.removeStitch()
-                playRemoveHaptic()
+                Haptics.light()
                 saveChanges()
             }
             .labelStyle(.iconOnly)
@@ -135,7 +135,7 @@ struct CounterView: View {
 
             Button("Add stitch", systemImage: "plus") {
                 part.addStitch()
-                playTapHaptic()
+                Haptics.medium()
                 saveChanges()
             }
             .labelStyle(.iconOnly)
@@ -156,6 +156,7 @@ struct CounterView: View {
                 ForEach(project.sortedParts) { otherPart in
                     Button {
                         part = otherPart
+                        Haptics.light()
                     } label: {
                         if otherPart == part {
                             Label(otherPart.currentCopyName, systemImage: "checkmark")
@@ -168,32 +169,32 @@ struct CounterView: View {
                 Divider()
                 Button("Add part", systemImage: "plus") {
                     showingAddPart = true
+                    Haptics.light()
                 }
             } label: {
                 HStack(spacing: 4) {
                     Text("\(project.name) · \(part.currentCopyName)")
                         .font(.headline)
+                        .fontWeight(.semibold)
                     Image(systemName: "chevron.down")
-                        .font(.caption.bold())
+                        .font(.caption)
+                        .fontWeight(.bold)
                 }
                 .foregroundStyle(.primary)
             }
         } else {
             Text(project.name)
                 .font(.headline)
+                .fontWeight(.semibold)
         }
     }
 
-    // Buzz on a tap, unless haptics are off in Settings
-    func playTapHaptic() {
-        if hapticsOn {
-            tapCount += 1
-        }
-    }
-
-    func playRemoveHaptic() {
-        if hapticsOn {
-            removeCount += 1
+    // Heavy buzz for a round, or a double buzz when it hits the planned rounds
+    func playRoundHaptic() {
+        if part.currentRound == part.plannedRounds {
+            Haptics.success()
+        } else {
+            Haptics.heavy()
         }
     }
 

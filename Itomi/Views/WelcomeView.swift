@@ -14,7 +14,8 @@ struct WelcomeView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Itomi")
-                        .font(.system(size: 44, weight: .heavy, design: .rounded))
+                        .font(.system(size: 44, design: .rounded))
+                        .fontWeight(.heavy)
                     Text("Count every row, one stitch at a time.")
                         .font(.title3)
                         .opacity(0.85)
@@ -39,11 +40,13 @@ struct WelcomeView: View {
             } label: {
                 Text("Get started")
                     .font(.headline)
+                    .fontWeight(.semibold)
                     .foregroundStyle(Color.accent)
                     .frame(maxWidth: .infinity, minHeight: 56)
                     .background(Color.cream, in: Capsule())
             }
             .buttonStyle(.plain)
+            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
             .padding(.horizontal, 28)
             .padding(.bottom, 8)
         }
@@ -67,6 +70,7 @@ struct FeatureRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.headline)
+                    .fontWeight(.semibold)
                 Text(detail)
                     .font(.subheadline)
                     .opacity(0.85)

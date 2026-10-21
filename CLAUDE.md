@@ -4,6 +4,13 @@
 
 Aryan owns every decision and sees everything before it ships. Claude is the engineer. Today's goal and progress live in **`docs/PLAN.md`**: read it at the start of every session.
 
+## What makes Itomi different
+
+Not another row counter. Three ideas every feature has to fit:
+- **Made for amigurumi:** parts are the heart of the app, and you always see which pieces are left.
+- **Never lose your place:** one tap to count, saved instantly, and coming back after days away is effortless.
+- **Calm and respectful:** no ads, no upsells while counting (the paywall only shows from +), your data is yours.
+
 ## Product (decided, don't reopen)
 
 **Free, forever, no ads**
@@ -49,6 +56,7 @@ Aryan owns every decision and sees everything before it ships. Claude is the eng
 
 - Xcode project at the repo root, target `Itomi`, bundle `com.aryan.Itomi`.
 - iPhone only, iOS 26 minimum, portrait only. Display name Itomi.
+- Build with the newer Xcode: `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` (xcode-select points at Xcode 26.6, which can't open this project).
 - Storage: SwiftData (added by hand, no template sample code).
 - Repo: https://github.com/imAryanL/Itomi (private).
 
@@ -56,6 +64,6 @@ Aryan owns every decision and sees everything before it ships. Claude is the eng
 
 - Each session has one goal from `docs/PLAN.md`. Say it at the start, Aryan approves, build it, show it working in the simulator, then tick it off in the plan.
 - Commits: only for meaningful work, never tiny setting tweaks (roll those into the next real commit). Show the message first, 5–6 short bullets in Aryan's voice, and ask before committing. Never add a `Co-Authored-By` line.
-- Roles: the main session is the engineer (Opus, high effort). Subagents in `.claude/agents/` are checkers only: `code-reviewer` (read-only, Sonnet) runs only on the risky milestones: 1 (data model), 4 (counter), 8 (purchases) and 10 (Lock Screen counter). Medium effort for 4, high for 1, 8 and 10. `qa-tester` (Sonnet, low effort; Aryan also tests flows himself) builds, runs and taps through the simulator after the reviewer, once a milestone has screens to test. No agent teams. Say before running one.
+- Roles: the main session is the engineer (Opus, high effort). Subagents in `.claude/agents/` are checkers only: `code-reviewer` (read-only, Sonnet) runs only on the risky milestones: 1 (data model), 4 (counter), 8 (purchases) and 10 (Lock Screen counter). Always medium effort (Aryan's call). `qa-tester` (Sonnet, low effort; Aryan also tests flows himself) builds, runs and taps through the simulator after the reviewer, once a milestone has screens to test. No agent teams. Say before running one.
 - End of session (when Aryan says "wrap up"): tick finished boxes and add a dated log entry in `docs/PLAN.md`, update this file only if a rule or decision changed, and update the Itomi memory notes.
 - Research behind the product: `~/Desktop/reports/Crochet iOS app market research.md`.

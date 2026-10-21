@@ -1,4 +1,4 @@
-// Sheet for starting a new project: name, hook size, yarn, and how to count
+// Sheet for starting a new project (or editing one): name, hook size, yarn, and how to count
 
 import SwiftUI
 import SwiftData
@@ -7,6 +7,9 @@ import PhotosUI
 struct NewProjectSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+
+    // Set when editing an existing project instead of making a new one
+    var projectToEdit: Project?
 
     @State private var name = ""
     @State private var hookSize = "4.0 mm"
@@ -21,6 +24,19 @@ struct NewProjectSheet: View {
         "4.0 mm", "4.5 mm", "5.0 mm", "5.5 mm", "6.0 mm", "6.5 mm", "7.0 mm", "8.0 mm",
         "9.0 mm", "10.0 mm", "12.0 mm"
     ]
+
+    // Start with the project's details filled in when editing
+    init(projectToEdit: Project? = nil) {
+        self.projectToEdit = projectToEdit
+        if let project = projectToEdit {
+            _name = State(initialValue: project.name)
+            _hookSize = State(initialValue: project.hookSize)
+            _yarn = State(initialValue: project.yarn)
+            _usesParts = State(initialValue: project.usesParts)
+            _countsInRounds = State(initialValue: project.countsInRounds)
+            _photoData = State(initialValue: project.photo)
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -47,9 +63,12 @@ struct NewProjectSheet: View {
                 }
 
                 Section {
-                    Toggle(isOn: $usesParts) {
-                        Text("Split into parts")
-                        Text("Head, body, arms… each with its own counter")
+                    // Parts can't be switched on or off once the project exists
+                    if projectToEdit == nil {
+                        Toggle(isOn: $usesParts) {
+                            Text("Split into parts")
+                            Text("Head, body, arms… each with its own counter")
+                        }
                     }
                     Toggle(isOn: $countsInRounds) {
                         Text("Count in rounds")
@@ -59,19 +78,37 @@ struct NewProjectSheet: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color.warmBackground)
-            .navigationTitle("New project")
+            // Tick when a hook size or switch changes
+            .onChange(of: hookSize) {
+                Haptics.light()
+            }
+            .onChange(of: usesParts) {
+                Haptics.light()
+            }
+            .onChange(of: countsInRounds) {
+                Haptics.light()
+            }
+            .navigationTitle(projectToEdit == nil ? "New project" : "Edit project")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
+                        Haptics.light()
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Create") {
-                        createProject()
+                    if projectToEdit == nil {
+                        Button("Create") {
+                            createProject()
+                        }
+                        .disabled(trimmedName.isEmpty)
+                    } else {
+                        Button("Save") {
+                            saveEdits()
+                        }
+                        .disabled(trimmedName.isEmpty)
                     }
-                    .disabled(trimmedName.isEmpty)
                 }
             }
             // Shrink a newly picked photo and keep it until Create
@@ -86,36 +123,59 @@ struct NewProjectSheet: View {
         }
     }
 
-    // Dashed "Add photo" box, or the picked photo
+    // Dashed "Add photo" box, or the picked photo at the same size
     var photoBox: some View {
         PhotosPicker(selection: $pickedPhoto, matching: .images) {
-            ZStack {
-                if let photoData, let image = UIImage(data: photoData) {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                } else {
-                    RoundedRectangle(cornerRadius: 28)
-                        .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [6]))
-                        .foregroundStyle(.tint.opacity(0.4))
-                    VStack(spacing: 6) {
-                        Image(systemName: "camera")
-                            .font(.title2)
-                        Text("Add photo")
-                            .font(.subheadline.bold())
+            Color.clear
+                .frame(width: 170, height: 170)
+                .overlay {
+                    if let photoData, let image = UIImage(data: photoData) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        RoundedRectangle(cornerRadius: 40)
+                            .strokeBorder(style: StrokeStyle(lineWidth: 2.5, dash: [8]))
+                            .foregroundStyle(.tint.opacity(0.4))
+                        VStack(spacing: 8) {
+                            Image(systemName: "camera.fill")
+                                .font(.largeTitle)
+                            Text("Add photo")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                        }
+                        .foregroundStyle(.tint)
                     }
-                    .foregroundStyle(.tint)
                 }
-            }
-            .frame(width: 120, height: 120)
-            .clipShape(RoundedRectangle(cornerRadius: 28))
+                .clipShape(RoundedRectangle(cornerRadius: 40))
         }
+        .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
         .frame(maxWidth: .infinity)
     }
 
     // The name without extra spaces at the start or end
     var trimmedName: String {
         return name.trimmingCharacters(in: .whitespaces)
+    }
+
+    // Save changes to the project being edited and close the sheet
+    func saveEdits() {
+        guard let project = projectToEdit else {
+            return
+        }
+        project.name = trimmedName
+        project.hookSize = hookSize
+        project.yarn = yarn.trimmingCharacters(in: .whitespaces)
+        project.countsInRounds = countsInRounds
+        project.photo = photoData
+
+        do {
+            try modelContext.save()
+        } catch {
+            print("Couldn't save project: \(error)")
+        }
+        Haptics.light()
+        dismiss()
     }
 
     // Save the new project and close the sheet
@@ -142,6 +202,7 @@ struct NewProjectSheet: View {
         } catch {
             print("Couldn't save project: \(error)")
         }
+        Haptics.success()
         dismiss()
     }
 }

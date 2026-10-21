@@ -4,6 +4,7 @@ import SwiftUI
 import SwiftData
 
 struct ProjectsView: View {
+    @Environment(\.modelContext) private var modelContext
     let launchFinished: Bool
 
     @Query(filter: #Predicate<Project> { project in
@@ -19,6 +20,8 @@ struct ProjectsView: View {
     @State private var showingNewProject = false
     @State private var showingOnboarding = false
     @State private var showingSettings = false
+    @State private var projectToEdit: Project?
+    @State private var projectToDelete: Project?
     @State private var path = NavigationPath()
     @AppStorage("hasFinishedOnboarding") private var hasFinishedOnboarding = false
 
@@ -35,14 +38,17 @@ struct ProjectsView: View {
             .navigationTitle("Projects")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Settings", systemImage: "gearshape") {
+                    Button("Settings", systemImage: "gearshape.fill") {
                         showingSettings = true
+                        Haptics.light()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("New project", systemImage: "plus") {
                         showingNewProject = true
+                        Haptics.light()
                     }
+                    .fontWeight(.bold)
                     .buttonStyle(.glassProminent)
                 }
             }
@@ -69,6 +75,9 @@ struct ProjectsView: View {
                 }
             }
             .onAppear {
+                #if DEBUG
+                SampleData.addIfAsked(into: modelContext, existing: projectsInProgress + finishedProjects)
+                #endif
                 checkOnboarding()
             }
             .onChange(of: launchFinished) {
@@ -100,57 +109,165 @@ struct ProjectsView: View {
     }
 
     var projectList: some View {
-        List {
-            if projectsInProgress.isEmpty == false {
-                Section("In progress") {
-                    ForEach(projectsInProgress) { project in
-                        NavigationLink(value: project) {
-                            ProjectRow(project: project)
-                        }
-                    }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                if projectsInProgress.isEmpty == false {
+                    SectionTitle(text: "In progress")
+                        .padding(.top, 8)
+                    inProgressCard
                 }
-            }
 
-            if finishedProjects.isEmpty == false {
-                Section {
-                    finishedShelf
-                } header: {
-                    HStack {
-                        Text("Finished")
-                        Spacer()
-                        Text("\(finishedProjects.count)")
+                if finishedProjects.isEmpty == false {
+                    HStack(spacing: 8) {
+                        SectionTitle(text: "Finished")
+                        CountBadge(count: finishedProjects.count)
                     }
+                    .padding(.top, 20)
+                    finishedGrid
                 }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
             }
+            .padding(.horizontal)
+            .padding(.bottom, 32)
         }
-        .scrollContentBackground(.hidden)
+        .sheet(item: $projectToEdit) { project in
+            NewProjectSheet(projectToEdit: project)
+        }
+        .confirmationDialog(deleteTitle, isPresented: showingDeleteConfirm, titleVisibility: .visible) {
+            Button("Delete Project", role: .destructive) {
+                deleteProject()
+            }
+        } message: {
+            Text("Its parts and counts go too. This can't be undone.")
+        }
     }
 
-    // Side-scrolling row of finished projects
-    var finishedShelf: some View {
-        ScrollView(.horizontal) {
-            HStack(alignment: .top, spacing: 12) {
-                ForEach(finishedProjects) { project in
-                    NavigationLink(value: project) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            ProjectThumbnail(project: project, size: 110)
-                            Text(project.name)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
-                                .lineLimit(1)
-                        }
-                        .frame(width: 110)
+    // Hold a project to edit, move or delete it
+    @ViewBuilder
+    func projectMenu(for project: Project) -> some View {
+        Button("Edit", systemImage: "pencil") {
+            projectToEdit = project
+        }
+        if project.isFinished {
+            Button("Back to In progress", systemImage: "arrow.uturn.backward") {
+                project.isFinished = false
+                project.finishedAt = nil
+                Haptics.light()
+                saveChanges()
+            }
+        }
+        Button("Delete", systemImage: "trash", role: .destructive) {
+            projectToDelete = project
+        }
+    }
+
+    // e.g. "Delete Bunny?"
+    var deleteTitle: String {
+        let name = projectToDelete?.name ?? "project"
+        return "Delete \(name)?"
+    }
+
+    // Shows the delete question whenever a project is picked for deleting
+    var showingDeleteConfirm: Binding<Bool> {
+        Binding(
+            get: { projectToDelete != nil },
+            set: { isShowing in
+                if isShowing == false {
+                    projectToDelete = nil
+                }
+            }
+        )
+    }
+
+    // Delete the picked project and its parts
+    func deleteProject() {
+        guard let project = projectToDelete else {
+            return
+        }
+        modelContext.delete(project)
+        projectToDelete = nil
+        Haptics.medium()
+        saveChanges()
+    }
+
+    func saveChanges() {
+        do {
+            try modelContext.save()
+        } catch {
+            print("Couldn't save projects: \(error)")
+        }
+    }
+
+    // White card with one row per project in progress
+    var inProgressCard: some View {
+        VStack(spacing: 0) {
+            ForEach(projectsInProgress) { project in
+                NavigationLink(value: project) {
+                    HStack {
+                        ProjectRow(project: project)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.tertiary)
                     }
-                    .buttonStyle(.plain)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
+                .contextMenu {
+                    projectMenu(for: project)
+                }
+
+                // Line between rows, starting after the photo
+                if project != projectsInProgress.last {
+                    Divider()
+                        .padding(.leading, 86)
                 }
             }
         }
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
-        // Keep names clear of the row's rounded bottom corner
-        .padding(.bottom, 20)
+        .padding(.vertical, 6)
+        .background(.background, in: RoundedRectangle(cornerRadius: 26))
+    }
+
+    // Finished projects, three across, wrapping onto new lines
+    var finishedGrid: some View {
+        let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+
+        return LazyVGrid(columns: columns, alignment: .leading, spacing: 16) {
+            ForEach(finishedProjects) { project in
+                NavigationLink(value: project) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        FinishedTile(project: project)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(project.name)
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.primary)
+                                .lineLimit(1)
+                            Text(finishedDateText(for: project))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.leading, 2)
+                    }
+                }
+                .buttonStyle(.plain)
+                .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
+                .contextMenu {
+                    projectMenu(for: project)
+                }
+            }
+        }
+    }
+
+    // e.g. "Oct 18", the day the project was finished
+    func finishedDateText(for project: Project) -> String {
+        guard let date = project.finishedAt else {
+            return "Finished"
+        }
+        return date.formatted(.dateTime.month(.abbreviated).day())
     }
 
     var emptyState: some View {
@@ -165,6 +282,7 @@ struct ProjectsView: View {
         } actions: {
             Button("New project") {
                 showingNewProject = true
+                Haptics.light()
             }
             .buttonStyle(.glassProminent)
             .controlSize(.large)
@@ -175,4 +293,40 @@ struct ProjectsView: View {
 #Preview {
     ProjectsView(launchFinished: true)
         .modelContainer(for: Project.self, inMemory: true)
+}
+
+// A finished project's square photo that fills its spot in the grid
+struct FinishedTile: View {
+    let project: Project
+
+    var body: some View {
+        Color.cream
+            .aspectRatio(1, contentMode: .fit)
+            .overlay {
+                if let data = project.photo, let image = UIImage(data: data) {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    LoopMark(size: 56, color: .accent)
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .accessibilityHidden(true)
+    }
+}
+
+// Small cream pill with a number, e.g. the 4 next to "Finished"
+struct CountBadge: View {
+    let count: Int
+
+    var body: some View {
+        Text("\(count)")
+            .font(.subheadline)
+            .fontWeight(.bold)
+            .foregroundStyle(Color.accent)
+            .padding(.horizontal, 9)
+            .padding(.vertical, 2)
+            .background(Color.cream, in: Capsule())
+    }
 }

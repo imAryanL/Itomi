@@ -17,7 +17,8 @@ struct LaunchView: View {
             VStack(spacing: 22) {
                 LoopMark(size: 160, color: .cream, progress: drawProgress)
                 Text("Itomi")
-                    .font(.system(size: 40, weight: .heavy, design: .rounded))
+                    .font(.system(size: 40, design: .rounded))
+                    .fontWeight(.heavy)
                     .foregroundStyle(Color.cream)
                     .opacity(showingName ? 1 : 0)
                     .offset(y: showingName ? 0 : 10)
