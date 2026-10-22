@@ -26,6 +26,8 @@ Tick a box when Aryan has seen it working.
 
 ## Phase 2: Pro
 
+Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywall lists only features that are built.
+
 - [ ] **8. RevenueCat + paywall,** Pro unlocked screen, 2-project limit sheet.
 - [ ] **9. Stitch targets,** "Fill in a sphere" helper, stitch warning.
 - [ ] **10. Lock Screen / Dynamic Island counter** (Live Activity + App Intent).
@@ -51,3 +53,10 @@ Tick a box when Aryan has seen it working.
   - Decisions: positioning written into CLAUDE.md (made for amigurumi, never lose your place, calm); 2-project free limit kept for now, test with real crocheters on TestFlight before launch; the paywall never shows on the counter.
   - Next: 7b (Head done → next: Body), then milestone 8 (create the yearly + lifetime products in App Store Connect, pick the yearly price, RevenueCat account).
 
+- **Oct 21–22, 2026 (amigurumi touches + store setup):** 7b and 7c built and checked in the simulator and on Aryan's iPhone 11. Commits 0886794 (7b) and 6c00b59 (7c), both pushed.
+  - Built: "Head done → Next: Body" card (loop draws itself, tap guard, Reduce Motion fade, VoiceOver line); "Welcome back · Last counted 3 days ago" on the counter; free assembly checklist ("Put it together", 4 default steps, editable, in backups); Settings → Testing → Add sample projects (debug builds only); gentle "Finish Bunny? 3 parts aren't done yet" check in the ••• menu.
+  - Fixed: part rows on the project page didn't open the counter (a haptic tap gesture swallowed the tap).
+  - Store: App Store Connect has group "Itomi Pro", Pro Yearly `com.aryan.Itomi.pro.yearly` ($12.99, free first week, 175 countries) and Pro Lifetime `com.aryan.Itomi.pro.lifetime` ($29.99). RevenueCat has project "Itomi", app `com.aryan.Itomi` (reuses the Outerwinds purchase key), entitlement `itomi_pro`, offering `default` (yearly + lifetime, no monthly). Family Sharing left off.
+  - Decisions: paywall at launch (weighed a free 1.0 and dropped it); full Pro at launch (8 through 11b); Make another is Pro (11b); assembly checklist is free; prices $12.99 / $29.99.
+  - To do for Aryan: enroll in the Small Business Program (not enrolled, 15% vs 30%); add a card for the Feb 25, 2027 developer renewal.
+  - Next: milestone 8 (RevenueCat package in Xcode, ProStore, paywall from the mockup at $12.99, limit sheet, Pro unlocked screen, StoreKit test file, code-reviewer).

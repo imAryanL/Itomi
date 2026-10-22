@@ -22,7 +22,7 @@ Not another row counter. Three ideas every feature has to fit:
 - Backup / export / restore, always free
 - **2 active projects.** Finished ones don't count. Existing projects are never locked. The limit only shows when tapping + (New project).
 
-**Pro** (yearly with 7-day trial ~$12.99–14.99, lifetime ~$29.99, no monthly, RevenueCat)
+**Pro** (yearly $12.99 with a free first week, lifetime $29.99, no monthly, RevenueCat; all of Pro ships in 1.0)
 1. Counter everywhere: Lock Screen Live Activity, Dynamic Island, widgets, Control Center, Action Button, Siri (one App Intent)
 2. Stitch-count warning: expected stitches per round + alert when a round doesn't add up
 3. Unlimited active projects

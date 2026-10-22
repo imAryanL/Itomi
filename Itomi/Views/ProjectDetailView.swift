@@ -11,6 +11,8 @@ struct ProjectDetailView: View {
     @State private var showingAddPart = false
     @State private var showingFinish = false
     @State private var showingAssembly = false
+    @State private var openedPart: Part?
+    @State private var showingFinishCheck = false
     @State private var pickedPhoto: PhotosPickerItem?
 
     var body: some View {
@@ -24,12 +26,21 @@ struct ProjectDetailView: View {
             if project.usesParts {
                 Section {
                     ForEach(project.sortedParts) { part in
-                        NavigationLink {
-                            CounterView(project: project, part: part)
+                        // A plain button, since a tap gesture on a List link stops it opening
+                        Button {
+                            Haptics.light()
+                            openedPart = part
                         } label: {
-                            PartRow(part: part)
+                            HStack(spacing: 12) {
+                                PartRow(part: part)
+                                Image(systemName: "chevron.right")
+                                    .font(.footnote)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .contentShape(Rectangle())
                         }
-                        .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
+                        .buttonStyle(.plain)
                     }
                     Button("Add part", systemImage: "plus") {
                         showingAddPart = true
@@ -78,6 +89,19 @@ struct ProjectDetailView: View {
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
         }
+        // Gentle check before finishing with parts still going
+        .alert("Finish \(project.name)?", isPresented: $showingFinishCheck) {
+            Button("Keep going", role: .cancel) {}
+            Button("Finish anyway") {
+                finishProject()
+            }
+        } message: {
+            Text(finishCheckMessage)
+        }
+        // Tapping a part opens its counter
+        .navigationDestination(item: $openedPart) { part in
+            CounterView(project: project, part: part)
+        }
         // Finishing from the checklist opens the finish screen next
         .sheet(isPresented: $showingAssembly, onDismiss: {
             if project.isFinished {
@@ -107,6 +131,37 @@ struct ProjectDetailView: View {
         }
     }
 
+    // How many parts aren't done yet (0 for a project without parts)
+    var partsLeft: Int {
+        if project.usesParts == false {
+            return 0
+        }
+        var left = 0
+        for part in project.parts {
+            if part.isDone == false {
+                left += 1
+            }
+        }
+        return left
+    }
+
+    // e.g. "2 parts aren't done yet. You can still finish it now."
+    var finishCheckMessage: String {
+        if partsLeft == 1 {
+            return "1 part isn't done yet. You can still finish it now."
+        }
+        return "\(partsLeft) parts aren't done yet. You can still finish it now."
+    }
+
+    // Move the project to the Finished shelf and show the finish screen
+    func finishProject() {
+        project.isFinished = true
+        project.finishedAt = Date.now
+        Haptics.success()
+        saveChanges()
+        showingFinish = true
+    }
+
     // The ••• menu: finish the project, or move it back to In progress
     var moreMenu: some View {
         Menu("More", systemImage: "ellipsis") {
@@ -119,11 +174,13 @@ struct ProjectDetailView: View {
                 }
             } else {
                 Button("Finish project", systemImage: "checkmark.circle") {
-                    project.isFinished = true
-                    project.finishedAt = Date.now
-                    Haptics.success()
-                    saveChanges()
-                    showingFinish = true
+                    // Parts still going: ask first, so it can't happen by mistake
+                    if partsLeft > 0 {
+                        showingFinishCheck = true
+                        Haptics.light()
+                    } else {
+                        finishProject()
+                    }
                 }
             }
         }

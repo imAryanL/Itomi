@@ -13,12 +13,17 @@ enum SampleData {
         if existing.isEmpty == false {
             return
         }
+        addAll(into: modelContext)
+    }
 
+    // Add every sample project (also from the Testing button in Settings)
+    static func addAll(into modelContext: ModelContext) {
         // In progress
         let bunny = Project(name: "Bunny", hookSize: "3.5 mm", yarn: "Cotton, cream")
         bunny.photo = photo(symbol: "hare.fill", color: .pink)
         addPart(to: bunny, name: "Head", rounds: 22, at: 22)
-        addPart(to: bunny, name: "Body", rounds: 18, at: 9, stitches: 14)
+        // One round left on the Body, so one tap shows "Body done → Next: Ears"
+        addPart(to: bunny, name: "Body", rounds: 18, at: 17, stitches: 14)
         addPart(to: bunny, name: "Ears", copies: 2, rounds: 12, at: 0)
         addPart(to: bunny, name: "Arms", copies: 2, rounds: 10, at: 0)
         modelContext.insert(bunny)

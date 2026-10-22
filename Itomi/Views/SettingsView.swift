@@ -38,6 +38,20 @@ struct SettingsView: View {
                     Text("A backup is one file with all your projects and photos. Save it to Files or send it to yourself.")
                 }
 
+                #if DEBUG
+                // Only in builds run from Xcode, never in the App Store version
+                Section {
+                    Button("Add sample projects") {
+                        SampleData.addAll(into: modelContext)
+                        Haptics.success()
+                    }
+                } header: {
+                    ListSectionTitle(text: "Testing")
+                } footer: {
+                    Text("Adds Bunny, Winter scarf, Teddy and 4 finished projects. Your own projects stay as they are.")
+                }
+                #endif
+
                 Section {
                     Text("Itomi \(appVersion)")
                         .font(.footnote)
