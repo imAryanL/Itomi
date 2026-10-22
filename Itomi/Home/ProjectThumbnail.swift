@@ -3,6 +3,7 @@
 import SwiftUI
 
 struct ProjectThumbnail: View {
+    @Environment(\.themeColor) private var themeColor
     let project: Project
     let size: CGFloat
 
@@ -14,7 +15,7 @@ struct ProjectThumbnail: View {
                     .scaledToFill()
             } else {
                 Color.cream
-                LoopMark(size: size * 0.6, color: .accent)
+                LoopMark(size: size * 0.6, color: themeColor)
             }
         }
         .frame(width: size, height: size)

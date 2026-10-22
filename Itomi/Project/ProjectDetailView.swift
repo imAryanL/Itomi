@@ -5,6 +5,7 @@ import SwiftData
 import PhotosUI
 
 struct ProjectDetailView: View {
+    @Environment(\.themeColor) private var themeColor
     @Environment(\.modelContext) private var modelContext
     @Bindable var project: Project
 
@@ -231,7 +232,7 @@ struct ProjectDetailView: View {
             Haptics.light()
         } label: {
             HStack(spacing: 14) {
-                LoopMark(size: 28, color: .accent)
+                LoopMark(size: 28, color: themeColor)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Every part is made")
                         .font(.headline)
@@ -333,6 +334,7 @@ struct DetailChip: View {
 
 // Big count for a project without parts, e.g. "Row 64 · Last counted today"
 struct CountCard: View {
+    @Environment(\.themeColor) private var themeColor
     let part: Part
 
     var body: some View {
@@ -341,7 +343,7 @@ struct CountCard: View {
                 Text("\(part.countWord) \(part.currentRound)")
                     .font(.system(size: 40, design: .rounded))
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.accent)
+                    .foregroundStyle(themeColor)
                     .contentTransition(.numericText())
                 if let planned = part.plannedRounds {
                     Text("of \(planned)")

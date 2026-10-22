@@ -27,6 +27,10 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    appearanceRow
+                }
+
+                Section {
                     Toggle("Haptics", isOn: $hapticsOn)
                     Toggle("Keep screen on while counting", isOn: $keepScreenOn)
                     // Pro: the counter card on the Lock Screen and in the Dynamic Island
@@ -117,6 +121,39 @@ struct SettingsView: View {
             } message: {
                 Text(restoreMessage ?? "")
             }
+        }
+    }
+
+    // Pro: theme color and app icon; free: shows the PRO badge and opens the paywall
+    @ViewBuilder
+    var appearanceRow: some View {
+        if proStore.isPro {
+            NavigationLink {
+                AppearanceView()
+            } label: {
+                Label("Appearance", systemImage: "paintpalette")
+            }
+            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
+        } else {
+            Button {
+                showingPaywall = true
+                Haptics.light()
+            } label: {
+                HStack {
+                    Label("Appearance", systemImage: "paintpalette")
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Text("PRO")
+                        .font(.caption)
+                        .fontWeight(.heavy)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(Color.accent, in: Capsule())
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 

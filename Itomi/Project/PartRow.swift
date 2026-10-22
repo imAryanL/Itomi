@@ -3,6 +3,7 @@
 import SwiftUI
 
 struct PartRow: View {
+    @Environment(\.themeColor) private var themeColor
     let part: Part
 
     var body: some View {
@@ -15,7 +16,7 @@ struct PartRow: View {
                     Text("×\(part.copies)")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.accent)
+                        .foregroundStyle(themeColor)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
                         .background(Color.cream, in: Capsule())
@@ -57,13 +58,14 @@ struct PartRow: View {
             Text(part.statusText)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(Color.accent)
+                .foregroundStyle(themeColor)
         }
     }
 }
 
 // Rounded bar: plum while counting, green when the part is done
 struct ThickProgressBar: View {
+    @Environment(\.themeColor) private var themeColor
     let value: Double
     let isDone: Bool
 
@@ -71,9 +73,9 @@ struct ThickProgressBar: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color.accent.opacity(0.12))
+                    .fill(themeColor.opacity(0.12))
                 Capsule()
-                    .fill(isDone ? Color.green : Color.accent)
+                    .fill(isDone ? Color.green : themeColor)
                     .frame(width: geometry.size.width * value)
             }
         }

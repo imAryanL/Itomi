@@ -53,17 +53,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		921E01B1308AB55800BAD092 /* SharedWithWidget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SharedWithWidget;
-			sourceTree = "<group>";
-		};
 		921E0196308AB55800BAD092 /* ItomiWidgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				921E01A3308AB55800BAD092 /* Exceptions for "ItomiWidgets" folder in "ItomiWidgetsExtension" target */,
 			);
 			path = ItomiWidgets;
+			sourceTree = "<group>";
+		};
+		921E01B1308AB55800BAD092 /* SharedWithWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SharedWithWidget;
 			sourceTree = "<group>";
 		};
 		9235782630882A2600120C8C /* Itomi */ = {
@@ -156,8 +156,8 @@
 				921E01A1308AB55800BAD092 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				9235782630882A2600120C8C /* Itomi */,
 				921E01B1308AB55800BAD092 /* SharedWithWidget */,
+				9235782630882A2600120C8C /* Itomi */,
 			);
 			name = Itomi;
 			packageProductDependencies = (
@@ -433,6 +433,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2PS662V7G3;
@@ -471,6 +472,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2PS662V7G3;

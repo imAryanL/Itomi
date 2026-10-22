@@ -3,6 +3,7 @@
 import SwiftUI
 
 struct PartDoneCard: View {
+    @Environment(\.themeColor) private var themeColor
     let part: Part
     let nextPart: Part?
     let onNext: () -> Void
@@ -48,7 +49,7 @@ struct PartDoneCard: View {
                 Text(buttonTitle)
                     .font(.headline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Color.accent)
+                    .foregroundStyle(themeColor)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.glassProminent)
@@ -68,7 +69,7 @@ struct PartDoneCard: View {
         .foregroundStyle(.white)
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.accent, in: RoundedRectangle(cornerRadius: 32))
+        .background(themeColor, in: RoundedRectangle(cornerRadius: 32))
         .onAppear {
             playLoop()
             announce()

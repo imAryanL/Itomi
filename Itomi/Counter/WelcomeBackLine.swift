@@ -3,13 +3,14 @@
 import SwiftUI
 
 struct WelcomeBackLine: View {
+    @Environment(\.themeColor) private var themeColor
     let text: String
 
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "hand.wave.fill")
                 .font(.title3)
-                .foregroundStyle(Color.accent)
+                .foregroundStyle(themeColor)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Welcome back")
                     .font(.headline)

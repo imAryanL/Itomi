@@ -2,6 +2,7 @@
 
 import Foundation
 import RevenueCat
+import UIKit
 
 @MainActor
 @Observable
@@ -10,9 +11,12 @@ final class ProStore {
     var isPro = false {
         didSet {
             UserDefaults.standard.set(isPro, forKey: "isPro")
-            // Pro ended: take the counter off the Lock Screen
+            // Pro ended: take the counter off the Lock Screen and go back to the plum icon
             if isPro == false {
                 LockScreenCounter.end()
+                if UIApplication.shared.alternateIconName != nil {
+                    UIApplication.shared.setAlternateIconName(nil)
+                }
             }
         }
     }

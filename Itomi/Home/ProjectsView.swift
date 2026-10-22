@@ -4,6 +4,7 @@ import SwiftUI
 import SwiftData
 
 struct ProjectsView: View {
+    @Environment(\.themeColor) private var themeColor
     @Environment(\.modelContext) private var modelContext
     @Environment(ProStore.self) private var proStore
     let launchFinished: Bool
@@ -340,7 +341,7 @@ struct ProjectsView: View {
             Label {
                 Text("Nothing on the hook")
             } icon: {
-                LoopMark(size: 72, color: .accent.opacity(0.35))
+                LoopMark(size: 72, color: themeColor.opacity(0.35))
             }
         } description: {
             Text("Start a project and count your first row.")
@@ -363,6 +364,7 @@ struct ProjectsView: View {
 
 // A finished project's square photo that fills its spot in the grid
 struct FinishedTile: View {
+    @Environment(\.themeColor) private var themeColor
     let project: Project
 
     var body: some View {
@@ -374,7 +376,7 @@ struct FinishedTile: View {
                         .resizable()
                         .scaledToFill()
                 } else {
-                    LoopMark(size: 56, color: .accent)
+                    LoopMark(size: 56, color: themeColor)
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 24))
@@ -384,13 +386,14 @@ struct FinishedTile: View {
 
 // Small cream pill with a number, e.g. the 4 next to "Finished"
 struct CountBadge: View {
+    @Environment(\.themeColor) private var themeColor
     let count: Int
 
     var body: some View {
         Text("\(count)")
             .font(.subheadline)
             .fontWeight(.bold)
-            .foregroundStyle(Color.accent)
+            .foregroundStyle(themeColor)
             .padding(.horizontal, 9)
             .padding(.vertical, 2)
             .background(Color.cream, in: Capsule())

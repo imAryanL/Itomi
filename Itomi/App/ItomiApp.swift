@@ -7,6 +7,7 @@ import SwiftData
 struct ItomiApp: App {
     @State private var showingLaunch = true
     @State private var proStore = ProStore()
+    @AppStorage("theme") private var themeName = Theme.plum.rawValue
 
     init() {
         RoundedTitles.apply()
@@ -29,7 +30,8 @@ struct ItomiApp: App {
             .fontDesign(.rounded)
             // Every word a little heavier than iOS's regular, so the app reads sturdy
             .fontWeight(.medium)
-            .tint(Color.accent)
+            .tint(currentTheme.color)
+            .environment(\.themeColor, currentTheme.color)
             .environment(proStore)
             // Load prices and watch for Pro turning on or off
             .task {
@@ -38,5 +40,13 @@ struct ItomiApp: App {
         }
         // Save projects (and their parts and stitch targets) on the phone
         .modelContainer(AppData.container)
+    }
+
+    // The picked theme for Pro, plum for everyone else
+    var currentTheme: Theme {
+        if proStore.isPro == false {
+            return .plum
+        }
+        return Theme(rawValue: themeName) ?? .plum
     }
 }

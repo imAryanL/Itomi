@@ -5,6 +5,7 @@ import SwiftData
 import PhotosUI
 
 struct FinishView: View {
+    @Environment(\.themeColor) private var themeColor
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -20,7 +21,7 @@ struct FinishView: View {
             } else {
                 LoopMark(size: 110, color: .cream)
                     .frame(width: 160, height: 160)
-                    .background(Color.accent, in: RoundedRectangle(cornerRadius: 40))
+                    .background(themeColor, in: RoundedRectangle(cornerRadius: 40))
             }
 
             VStack(spacing: 8) {

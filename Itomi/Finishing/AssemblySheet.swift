@@ -4,6 +4,7 @@ import SwiftUI
 import SwiftData
 
 struct AssemblySheet: View {
+    @Environment(\.themeColor) private var themeColor
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -80,7 +81,7 @@ struct AssemblySheet: View {
     // Loop, title and a gentle line about where things stand
     var header: some View {
         VStack(spacing: 12) {
-            LoopMark(size: 56, color: .accent)
+            LoopMark(size: 56, color: themeColor)
             Text("Putting \(project.name) together")
                 .font(.title)
                 .fontWeight(.bold)
@@ -118,7 +119,7 @@ struct AssemblySheet: View {
                 if step.isDone {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.title2)
-                        .foregroundStyle(Color.accent)
+                        .foregroundStyle(themeColor)
                 } else {
                     Image(systemName: "circle")
                         .font(.title2)

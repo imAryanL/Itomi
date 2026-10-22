@@ -4,6 +4,7 @@ import SwiftUI
 import SwiftData
 
 struct CounterView: View {
+    @Environment(\.themeColor) private var themeColor
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(ProStore.self) private var proStore
@@ -171,7 +172,7 @@ struct CounterView: View {
             }
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.accent, in: RoundedRectangle(cornerRadius: 32))
+            .background(themeColor, in: RoundedRectangle(cornerRadius: 32))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(part.roundText)
