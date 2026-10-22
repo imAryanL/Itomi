@@ -7,7 +7,9 @@ import UniformTypeIdentifiers
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(ProStore.self) private var proStore
     @Query private var allProjects: [Project]
+    @State private var showingPaywall = false
 
     @AppStorage("hapticsOn") private var hapticsOn = true
     @AppStorage("keepScreenOn") private var keepScreenOn = true
@@ -19,6 +21,10 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    proRow
+                }
+
                 Section {
                     Toggle("Haptics", isOn: $hapticsOn)
                     Toggle("Keep screen on while counting", isOn: $keepScreenOn)
@@ -70,6 +76,9 @@ struct SettingsView: View {
                 Haptics.light()
             }
             .navigationTitle("Settings")
+            .fullScreenCover(isPresented: $showingPaywall) {
+                PaywallView()
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -96,6 +105,54 @@ struct SettingsView: View {
             } message: {
                 Text(restoreMessage ?? "")
             }
+        }
+    }
+
+    // Itomi Pro: a thank-you when Pro is on, otherwise opens the paywall
+    @ViewBuilder
+    var proRow: some View {
+        if proStore.isPro {
+            HStack(spacing: 14) {
+                LoopMark(size: 22, color: .cream)
+                    .frame(width: 36, height: 36)
+                    .background(Color.accent, in: RoundedRectangle(cornerRadius: 10))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Itomi Pro")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    Text("Thank you for supporting Itomi")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .accessibilityElement(children: .combine)
+        } else {
+            Button {
+                showingPaywall = true
+                Haptics.light()
+            } label: {
+                HStack(spacing: 14) {
+                    LoopMark(size: 22, color: .cream)
+                        .frame(width: 36, height: 36)
+                        .background(Color.accent, in: RoundedRectangle(cornerRadius: 10))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Itomi Pro")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
+                        Text("Lock Screen counter, unlimited projects and more")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.tertiary)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 

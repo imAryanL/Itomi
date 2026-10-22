@@ -5,6 +5,7 @@ import SwiftData
 
 struct ProjectsView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(ProStore.self) private var proStore
     let launchFinished: Bool
 
     @Query(filter: #Predicate<Project> { project in
@@ -20,6 +21,9 @@ struct ProjectsView: View {
     @State private var showingNewProject = false
     @State private var showingOnboarding = false
     @State private var showingSettings = false
+    @State private var showingLimit = false
+    @State private var showingPaywall = false
+    @State private var wantsPaywall = false
     @State private var projectToEdit: Project?
     @State private var projectToDelete: Project?
     @State private var path = NavigationPath()
@@ -45,8 +49,7 @@ struct ProjectsView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("New project", systemImage: "plus") {
-                        showingNewProject = true
-                        Haptics.light()
+                        startNewProject()
                     }
                     .fontWeight(.bold)
                     .buttonStyle(.glassProminent)
@@ -57,6 +60,21 @@ struct ProjectsView: View {
             }
             .sheet(isPresented: $showingSettings) {
                 SettingsView()
+            }
+            // "See Itomi Pro" closes this sheet first, then the paywall opens
+            .sheet(isPresented: $showingLimit, onDismiss: {
+                if wantsPaywall {
+                    wantsPaywall = false
+                    showingPaywall = true
+                }
+            }) {
+                ProjectLimitSheet(projectsGoing: projectsInProgress.count) {
+                    wantsPaywall = true
+                    showingLimit = false
+                }
+            }
+            .fullScreenCover(isPresented: $showingPaywall) {
+                PaywallView()
             }
             .navigationDestination(for: Project.self) { project in
                 ProjectDetailView(project: project)
@@ -83,6 +101,16 @@ struct ProjectsView: View {
             .onChange(of: launchFinished) {
                 checkOnboarding()
             }
+        }
+    }
+
+    // Free plan: 2 projects going at a time (finished ones don't count)
+    func startNewProject() {
+        Haptics.light()
+        if proStore.isPro || projectsInProgress.count < 2 {
+            showingNewProject = true
+        } else {
+            showingLimit = true
         }
     }
 
@@ -292,6 +320,7 @@ struct ProjectsView: View {
 
 #Preview {
     ProjectsView(launchFinished: true)
+        .environment(ProStore())
         .modelContainer(for: Project.self, inMemory: true)
 }
 

@@ -28,7 +28,7 @@ Tick a box when Aryan has seen it working.
 
 Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywall lists only features that are built.
 
-- [ ] **8. RevenueCat + paywall,** Pro unlocked screen, 2-project limit sheet.
+- [x] **8. RevenueCat + paywall,** Pro unlocked screen, 2-project limit sheet.
 - [ ] **9. Stitch targets,** "Fill in a sphere" helper, stitch warning.
 - [ ] **10. Lock Screen / Dynamic Island counter** (Live Activity + App Intent).
 - [ ] **11. Themes + app icons.** Pattern viewer only if there's time, else v1.1.
@@ -60,3 +60,6 @@ Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywal
   - Decisions: paywall at launch (weighed a free 1.0 and dropped it); full Pro at launch (8 through 11b); Make another is Pro (11b); assembly checklist is free; prices $12.99 / $29.99.
   - To do for Aryan: enroll in the Small Business Program (not enrolled, 15% vs 30%); add a card for the Feb 25, 2027 developer renewal.
   - Next: milestone 8 (RevenueCat package in Xcode, ProStore, paywall from the mockup at $12.99, limit sheet, Pro unlocked screen, StoreKit test file, code-reviewer).
+- **Oct 22, 2026 (milestone 8):** RevenueCat package (5.97.0), ProStore, paywall, 2-project limit sheet, "You're Pro now", Pro row in Settings. Xcode builds use RevenueCat's Test Store (fake purchases, placeholder $79.99/$99.99); release builds use the App Store key. Tested in the simulator: failed, yearly and lifetime purchases, restore, Pro remembered after relaunch. code-reviewer (medium) found 4 must-fixes, all fixed (renewal text, trial only if eligible, double-tap guard, honest error text). Installed on Aryan's iPhone 11.
+  - Before submitting: itomiapp.com/privacy must exist (milestone 12); paywall lists features built in 9–11b.
+  - Next: milestone 9 (stitch targets, "Fill in a sphere" helper, stitch warning).

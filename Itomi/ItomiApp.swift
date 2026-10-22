@@ -6,9 +6,11 @@ import SwiftData
 @main
 struct ItomiApp: App {
     @State private var showingLaunch = true
+    @State private var proStore = ProStore()
 
     init() {
         RoundedTitles.apply()
+        ProStore.configure()
     }
 
     var body: some Scene {
@@ -28,6 +30,11 @@ struct ItomiApp: App {
             // Every word a little heavier than iOS's regular, so the app reads sturdy
             .fontWeight(.medium)
             .tint(Color.accent)
+            .environment(proStore)
+            // Load prices and watch for Pro turning on or off
+            .task {
+                await proStore.start()
+            }
         }
         // Save projects (and their parts and stitch targets) on the phone
         .modelContainer(for: Project.self)
