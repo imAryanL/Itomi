@@ -1,4 +1,4 @@
-// Itomi Pro: what Pro adds, yearly or lifetime, buy or restore (only opened from + or Settings)
+// Itomi Pro: what Pro adds, yearly or lifetime, buy or restore (opened from +, Settings or a part's stitches)
 
 import SwiftUI
 import RevenueCat

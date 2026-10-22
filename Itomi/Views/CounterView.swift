@@ -6,10 +6,13 @@ import SwiftData
 struct CounterView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(ProStore.self) private var proStore
 
     let project: Project
     @State private var part: Part
     @State private var showingAddPart = false
+    @State private var editingPart: Part?
+    @State private var stitchWarning: StitchWarning?
     @State private var showingPartDone = false
     @State private var showingFinish = false
     @State private var showingAssembly = false
@@ -52,10 +55,16 @@ struct CounterView: View {
                 .controlSize(.large)
             }
 
+            if let stitchWarning {
+                StitchWarningCard(warning: stitchWarning, onFix: fixStitches, onKeepGoing: hideStitchWarning)
+                    .transition(.opacity)
+            }
+
             stitchCard
 
             Button("Undo", systemImage: "arrow.uturn.backward") {
                 showingPartDone = false
+                stitchWarning = nil
                 part.undo()
                 Haptics.medium()
                 saveChanges()
@@ -77,6 +86,9 @@ struct CounterView: View {
         }
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
+        }
+        .sheet(item: $editingPart) { partToEdit in
+            AddPartSheet(project: project, partToEdit: partToEdit)
         }
         // Finishing from the checklist opens the finish screen next
         .sheet(isPresented: $showingAssembly, onDismiss: {
@@ -110,9 +122,19 @@ struct CounterView: View {
     var roundCard: some View {
         Button {
             let wasDone = part.isDone
+            let warning = checkStitches()
             part.addRound()
-            playRoundHaptic()
             saveChanges()
+
+            if let warning {
+                Haptics.warning()
+                AccessibilityNotification.Announcement(warning.title).post()
+            } else {
+                playRoundHaptic()
+            }
+            withAnimation {
+                stitchWarning = warning
+            }
 
             // This tap finished the whole part: show the done card
             if project.usesParts && wasDone == false && part.isDone {
@@ -162,7 +184,7 @@ struct CounterView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .contentTransition(.numericText())
-                    if let expected = part.expectedStitches(forRound: part.currentRound) {
+                    if let expected = part.expectedStitchesNow {
                         Text("of \(expected)")
                             .foregroundStyle(.secondary)
                     }
@@ -172,6 +194,7 @@ struct CounterView: View {
             Spacer()
 
             Button("Remove stitch", systemImage: "minus") {
+                stitchWarning = nil
                 part.removeStitch()
                 Haptics.light()
                 saveChanges()
@@ -184,6 +207,7 @@ struct CounterView: View {
             .disabled(part.currentStitch == 0)
 
             Button("Add stitch", systemImage: "plus") {
+                stitchWarning = nil
                 part.addStitch()
                 Haptics.medium()
                 saveChanges()
@@ -207,6 +231,7 @@ struct CounterView: View {
                     Button {
                         part = otherPart
                         showingPartDone = false
+                        stitchWarning = nil
                         Haptics.light()
                     } label: {
                         if otherPart == part {
@@ -218,6 +243,10 @@ struct CounterView: View {
                     }
                 }
                 Divider()
+                Button("Edit \(part.name)", systemImage: "pencil") {
+                    editingPart = part
+                    Haptics.light()
+                }
                 Button("Add part", systemImage: "plus") {
                     showingAddPart = true
                     Haptics.light()
@@ -259,6 +288,46 @@ struct CounterView: View {
         withAnimation {
             part = next
             showingPartDone = false
+            stitchWarning = nil
+        }
+    }
+
+    // Pro: the round about to be finished doesn't have the stitches it should (only if stitches were counted)
+    func checkStitches() -> StitchWarning? {
+        if proStore.isPro == false || part.currentStitch == 0 {
+            return nil
+        }
+        guard let expected = part.expectedStitchesNow else {
+            return nil
+        }
+        if part.currentStitch == expected {
+            return nil
+        }
+        let round = part.workingRound
+        return StitchWarning(
+            countWord: part.countWord,
+            round: round,
+            counted: part.currentStitch,
+            expected: expected,
+            expectedBefore: part.expectedStitches(forRound: round - 1)
+        )
+    }
+
+    // Go back to the round before, stitches and all, to fix the count
+    func fixStitches() {
+        part.undo()
+        Haptics.medium()
+        saveChanges()
+        withAnimation {
+            stitchWarning = nil
+            showingPartDone = false
+        }
+    }
+
+    func hideStitchWarning() {
+        Haptics.light()
+        withAnimation {
+            stitchWarning = nil
         }
     }
 

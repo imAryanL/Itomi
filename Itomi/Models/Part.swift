@@ -198,4 +198,14 @@ final class Part {
         }
         return nil
     }
+
+    // The round being worked on now (the counter shows rounds already done)
+    var workingRound: Int {
+        return currentRound + 1
+    }
+
+    // Expected stitches for the round being worked on, if one was set
+    var expectedStitchesNow: Int? {
+        return expectedStitches(forRound: workingRound)
+    }
 }

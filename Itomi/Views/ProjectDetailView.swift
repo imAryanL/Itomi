@@ -12,6 +12,7 @@ struct ProjectDetailView: View {
     @State private var showingFinish = false
     @State private var showingAssembly = false
     @State private var openedPart: Part?
+    @State private var editingPart: Part?
     @State private var showingFinishCheck = false
     @State private var pickedPhoto: PhotosPickerItem?
 
@@ -41,6 +42,12 @@ struct ProjectDetailView: View {
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            Button("Edit part", systemImage: "pencil") {
+                                Haptics.light()
+                                editingPart = part
+                            }
+                        }
                     }
                     Button("Add part", systemImage: "plus") {
                         showingAddPart = true
@@ -88,6 +95,9 @@ struct ProjectDetailView: View {
         }
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
+        }
+        .sheet(item: $editingPart) { part in
+            AddPartSheet(project: project, partToEdit: part)
         }
         // Gentle check before finishing with parts still going
         .alert("Finish \(project.name)?", isPresented: $showingFinishCheck) {

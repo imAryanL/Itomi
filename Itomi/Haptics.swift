@@ -26,6 +26,14 @@ enum Haptics {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
+    // Gentle "hmm" buzz when a round's stitches don't add up
+    static func warning() {
+        if isOn == false {
+            return
+        }
+        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+    }
+
     static func play(_ style: UIImpactFeedbackGenerator.FeedbackStyle) {
         if isOn == false {
             return
