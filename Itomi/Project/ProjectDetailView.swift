@@ -169,6 +169,7 @@ struct ProjectDetailView: View {
         project.finishedAt = Date.now
         Haptics.success()
         saveChanges()
+        LockScreenCounter.projectEnded(project)
         showingFinish = true
     }
 

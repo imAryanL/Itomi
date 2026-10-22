@@ -7,14 +7,65 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		921E0193308AB55800BAD092 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921E0192308AB55800BAD092 /* WidgetKit.framework */; };
+		921E0195308AB55800BAD092 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921E0194308AB55800BAD092 /* SwiftUI.framework */; };
+		921E01A2308AB55800BAD092 /* ItomiWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 921E0190308AB55800BAD092 /* ItomiWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		92357900308A000000000001 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 92357900308A000000000002 /* RevenueCat */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		921E01A0308AB55800BAD092 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9235781C30882A2500120C8C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 921E018F308AB55800BAD092;
+			remoteInfo = ItomiWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		921E01A7308AB55800BAD092 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				921E01A2308AB55800BAD092 /* ItomiWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		921E0190308AB55800BAD092 /* ItomiWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ItomiWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		921E0192308AB55800BAD092 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		921E0194308AB55800BAD092 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		9235782430882A2600120C8C /* Itomi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Itomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		921E01A3308AB55800BAD092 /* Exceptions for "ItomiWidgets" folder in "ItomiWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 921E018F308AB55800BAD092 /* ItomiWidgetsExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		921E01B1308AB55800BAD092 /* SharedWithWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SharedWithWidget;
+			sourceTree = "<group>";
+		};
+		921E0196308AB55800BAD092 /* ItomiWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				921E01A3308AB55800BAD092 /* Exceptions for "ItomiWidgets" folder in "ItomiWidgetsExtension" target */,
+			);
+			path = ItomiWidgets;
+			sourceTree = "<group>";
+		};
 		9235782630882A2600120C8C /* Itomi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Itomi;
@@ -23,6 +74,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		921E018D308AB55800BAD092 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				921E0195308AB55800BAD092 /* SwiftUI.framework in Frameworks */,
+				921E0193308AB55800BAD092 /* WidgetKit.framework in Frameworks */,
+			);
+		};
 		9235782130882A2500120C8C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
@@ -32,10 +90,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		921E0191308AB55800BAD092 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				921E0192308AB55800BAD092 /* WidgetKit.framework */,
+				921E0194308AB55800BAD092 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9235781B30882A2500120C8C = {
 			isa = PBXGroup;
 			children = (
 				9235782630882A2600120C8C /* Itomi */,
+				921E0196308AB55800BAD092 /* ItomiWidgets */,
+				921E01B1308AB55800BAD092 /* SharedWithWidget */,
+				921E0191308AB55800BAD092 /* Frameworks */,
 				9235782530882A2600120C8C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -44,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				9235782430882A2600120C8C /* Itomi.app */,
+				921E0190308AB55800BAD092 /* ItomiWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -51,6 +122,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		921E018F308AB55800BAD092 /* ItomiWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 921E01A4308AB55800BAD092 /* Build configuration list for PBXNativeTarget "ItomiWidgetsExtension" */;
+			buildPhases = (
+				921E018C308AB55800BAD092 /* Sources */,
+				921E018D308AB55800BAD092 /* Frameworks */,
+				921E018E308AB55800BAD092 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				921E0196308AB55800BAD092 /* ItomiWidgets */,
+				921E01B1308AB55800BAD092 /* SharedWithWidget */,
+			);
+			name = ItomiWidgetsExtension;
+			productName = ItomiWidgetsExtension;
+			productReference = 921E0190308AB55800BAD092 /* ItomiWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		9235782330882A2500120C8C /* Itomi */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9235782F30882A2600120C8C /* Build configuration list for PBXNativeTarget "Itomi" */;
@@ -58,11 +148,16 @@
 				9235782030882A2500120C8C /* Sources */,
 				9235782130882A2500120C8C /* Frameworks */,
 				9235782230882A2500120C8C /* Resources */,
+				921E01A7308AB55800BAD092 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
+			dependencies = (
+				921E01A1308AB55800BAD092 /* PBXTargetDependency */,
+			);
 			fileSystemSynchronizedGroups = (
 				9235782630882A2600120C8C /* Itomi */,
+				921E01B1308AB55800BAD092 /* SharedWithWidget */,
 			);
 			name = Itomi;
 			packageProductDependencies = (
@@ -82,6 +177,9 @@
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
+					921E018F308AB55800BAD092 = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					9235782330882A2500120C8C = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -105,11 +203,17 @@
 			projectRoot = "";
 			targets = (
 				9235782330882A2500120C8C /* Itomi */,
+				921E018F308AB55800BAD092 /* ItomiWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		921E018E308AB55800BAD092 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 		9235782230882A2500120C8C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
@@ -118,6 +222,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		921E018C308AB55800BAD092 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 		9235782030882A2500120C8C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
@@ -125,7 +234,79 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		921E01A1308AB55800BAD092 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 921E018F308AB55800BAD092 /* ItomiWidgetsExtension */;
+			targetProxy = 921E01A0308AB55800BAD092 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		921E01A5308AB55800BAD092 /* Debug configuration for PBXNativeTarget "ItomiWidgetsExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2PS662V7G3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItomiWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Itomi;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aryan.Itomi.ItomiWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WIDGET_EXTENSION";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		921E01A6308AB55800BAD092 /* Release configuration for PBXNativeTarget "ItomiWidgetsExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2PS662V7G3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItomiWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Itomi;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aryan.Itomi.ItomiWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) WIDGET_EXTENSION";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		9235782D30882A2600120C8C /* Debug configuration for PBXProject "Itomi" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -326,6 +507,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		921E01A4308AB55800BAD092 /* Build configuration list for PBXNativeTarget "ItomiWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				921E01A5308AB55800BAD092 /* Debug configuration for PBXNativeTarget "ItomiWidgetsExtension" */,
+				921E01A6308AB55800BAD092 /* Release configuration for PBXNativeTarget "ItomiWidgetsExtension" */,
+			);
+			defaultConfigurationName = Release;
+		};
 		9235781F30882A2500120C8C /* Build configuration list for PBXProject "Itomi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

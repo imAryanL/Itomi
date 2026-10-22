@@ -13,6 +13,7 @@ struct SettingsView: View {
 
     @AppStorage("hapticsOn") private var hapticsOn = true
     @AppStorage("keepScreenOn") private var keepScreenOn = true
+    @AppStorage("lockScreenCounter") private var lockScreenCounter = true
 
     @State private var backupURL: URL?
     @State private var showingRestorePicker = false
@@ -28,6 +29,10 @@ struct SettingsView: View {
                 Section {
                     Toggle("Haptics", isOn: $hapticsOn)
                     Toggle("Keep screen on while counting", isOn: $keepScreenOn)
+                    // Pro: the counter card on the Lock Screen and in the Dynamic Island
+                    if proStore.isPro {
+                        Toggle("Counter on Lock Screen", isOn: $lockScreenCounter)
+                    }
                 } header: {
                     ListSectionTitle(text: "Counter")
                 }
@@ -74,6 +79,13 @@ struct SettingsView: View {
             }
             .onChange(of: keepScreenOn) {
                 Haptics.light()
+            }
+            // Turning it off takes the card away now
+            .onChange(of: lockScreenCounter) {
+                Haptics.light()
+                if lockScreenCounter == false {
+                    LockScreenCounter.end()
+                }
             }
             .navigationTitle("Settings")
             .fullScreenCover(isPresented: $showingPaywall) {

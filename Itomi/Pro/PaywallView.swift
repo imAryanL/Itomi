@@ -78,7 +78,7 @@ struct PaywallView: View {
     // Everything Pro adds (keep this list to features that are in the app)
     var featureCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            FeatureLine(icon: "lock.iphone", text: "Counter on your Lock Screen and Dynamic Island")
+            FeatureLine(icon: "lock.iphone", text: "Counter on your Lock Screen, Dynamic Island and Siri")
             FeatureLine(icon: "exclamationmark.triangle", text: "Stitch-count check on every round")
             FeatureLine(icon: "infinity", text: "Unlimited projects")
             FeatureLine(icon: "arrow.trianglehead.2.clockwise", text: "Make another of a finished project")

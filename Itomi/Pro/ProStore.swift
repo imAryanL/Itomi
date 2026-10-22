@@ -6,7 +6,16 @@ import RevenueCat
 @MainActor
 @Observable
 final class ProStore {
-    var isPro = false
+    // Also saved for the Lock Screen buttons and Siri, which can run while the app is closed
+    var isPro = false {
+        didSet {
+            UserDefaults.standard.set(isPro, forKey: "isPro")
+            // Pro ended: take the counter off the Lock Screen
+            if isPro == false {
+                LockScreenCounter.end()
+            }
+        }
+    }
     var yearly: Package?
     var lifetime: Package?
     var canGetFreeTrial = false

@@ -208,6 +208,7 @@ struct AssemblySheet: View {
         project.finishedAt = Date.now
         Haptics.success()
         saveChanges()
+        LockScreenCounter.projectEnded(project)
         dismiss()
     }
 

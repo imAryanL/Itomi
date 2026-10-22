@@ -106,12 +106,18 @@ struct CounterView: View {
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = keepScreenOn
             welcomeBackText = makeWelcomeBackText()
+            LockScreenCounter.show(part)
         }
-        // Hide the welcome line once counting starts again
+        // Hide the welcome line once counting starts again, and keep the Lock Screen card in step
         .onChange(of: part.lastCountedAt) {
             withAnimation {
                 welcomeBackText = nil
             }
+            LockScreenCounter.show(part)
+        }
+        // Switching parts moves the Lock Screen card to the new part
+        .onChange(of: part) {
+            LockScreenCounter.show(part)
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false

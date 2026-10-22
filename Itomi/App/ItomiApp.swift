@@ -37,6 +37,6 @@ struct ItomiApp: App {
             }
         }
         // Save projects (and their parts and stitch targets) on the phone
-        .modelContainer(for: Project.self)
+        .modelContainer(AppData.container)
     }
 }

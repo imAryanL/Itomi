@@ -211,6 +211,7 @@ struct ProjectsView: View {
         guard let project = projectToDelete else {
             return
         }
+        LockScreenCounter.projectEnded(project)
         modelContext.delete(project)
         projectToDelete = nil
         Haptics.medium()
