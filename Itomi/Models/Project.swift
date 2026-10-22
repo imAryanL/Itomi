@@ -103,6 +103,30 @@ final class Project {
         assemblySteps.append(AssemblyStep(text: text, sortOrder: nextOrder))
     }
 
+    // MARK: - Make another
+
+    // A fresh copy (Pro): same parts, rounds, stitch targets and steps, every counter at zero
+    func makeFreshCopy(named newName: String, in context: ModelContext) -> Project {
+        let copy = Project(name: newName, hookSize: hookSize, yarn: yarn, notes: notes, usesParts: usesParts, countsInRounds: countsInRounds)
+        copy.usesNeedles = usesNeedles
+
+        // Save the new project first, then hang its parts and steps on it
+        context.insert(copy)
+
+        for part in parts {
+            let newPart = Part(name: part.name, sortOrder: part.sortOrder, copies: part.copies, plannedRounds: part.plannedRounds)
+            copy.parts.append(newPart)
+            for target in part.stitchTargets {
+                newPart.stitchTargets.append(StitchTarget(round: target.round, stitches: target.stitches))
+            }
+        }
+
+        for step in assemblySteps {
+            copy.assemblySteps.append(AssemblyStep(text: step.text, sortOrder: step.sortOrder))
+        }
+        return copy
+    }
+
     // e.g. "4.0 mm hook" or "4.0 mm needles"
     var toolText: String {
         if usesNeedles {

@@ -176,6 +176,9 @@ struct ProjectsView: View {
             projectToEdit = project
         }
         if project.isFinished {
+            Button("Make another", systemImage: "arrow.trianglehead.2.clockwise") {
+                makeAnother(of: project)
+            }
             Button("Back to In progress", systemImage: "arrow.uturn.backward") {
                 project.isFinished = false
                 project.finishedAt = nil
@@ -186,6 +189,39 @@ struct ProjectsView: View {
         Button("Delete", systemImage: "trash", role: .destructive) {
             projectToDelete = project
         }
+    }
+
+    // Pro: start a fresh copy of a finished project and open it (free: show Itomi Pro)
+    func makeAnother(of project: Project) {
+        if proStore.isPro == false {
+            Haptics.light()
+            showingPaywall = true
+            return
+        }
+        let copy = project.makeFreshCopy(named: nameForCopy(of: project), in: modelContext)
+        saveChanges()
+        Haptics.success()
+        path.append(copy)
+    }
+
+    // "Bunny 2", or "Bunny 3" if there's already a Bunny 2 (copying "Bunny 2" also starts from "Bunny")
+    func nameForCopy(of project: Project) -> String {
+        var baseName = project.name
+        let words = project.name.split(separator: " ")
+        if words.count > 1, let lastWord = words.last, Int(lastWord) != nil {
+            baseName = words.dropLast().joined(separator: " ")
+        }
+
+        var takenNames: [String] = []
+        for other in projectsInProgress + finishedProjects {
+            takenNames.append(other.name)
+        }
+
+        var number = 2
+        while takenNames.contains("\(baseName) \(number)") {
+            number += 1
+        }
+        return "\(baseName) \(number)"
     }
 
     // e.g. "Delete Bunny?"
