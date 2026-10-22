@@ -18,6 +18,7 @@ Not another row counter. Three ideas every feature has to fit:
 - Counter: big tap area for rows/rounds, stitch counter, undo, saves after every tap
 - Parts (Head, Body, Ears ×2), each with its own counter
 - Finish a project → moves to the Finished shelf
+- Assembly checklist: when every part is done, tick off the sewing-up steps (stuff, sew on, embroider face) before finishing
 - Backup / export / restore, always free
 - **2 active projects.** Finished ones don't count. Existing projects are never locked. The limit only shows when tapping + (New project).
 
@@ -27,6 +28,7 @@ Not another row counter. Three ideas every feature has to fit:
 3. Unlimited active projects
 4. Pattern viewer (PDF/photo, row marker); may slip to v1.1
 5. Themes and app icons
+6. Make another: start a fresh copy of a finished project (same parts, rounds and stitch targets, counters at zero)
 
 **Later (v1.1+):** pattern helper (paste a pattern → rounds), knitting-specific features (charts, repeats).
 

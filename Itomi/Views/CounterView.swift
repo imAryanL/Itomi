@@ -12,6 +12,7 @@ struct CounterView: View {
     @State private var showingAddPart = false
     @State private var showingPartDone = false
     @State private var showingFinish = false
+    @State private var showingAssembly = false
     @State private var welcomeBackText: String? = nil
     @AppStorage("keepScreenOn") private var keepScreenOn = true
 
@@ -32,7 +33,7 @@ struct CounterView: View {
                     part: part,
                     nextPart: nextPart,
                     onNext: goToNextPart,
-                    onFinish: finishProject,
+                    onPutTogether: openAssembly,
                     onKeepCounting: hidePartDone
                 )
                 .transition(.opacity)
@@ -76,6 +77,14 @@ struct CounterView: View {
         }
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
+        }
+        // Finishing from the checklist opens the finish screen next
+        .sheet(isPresented: $showingAssembly, onDismiss: {
+            if project.isFinished {
+                showingFinish = true
+            }
+        }) {
+            AssemblySheet(project: project)
         }
         // After the finish screen, go back to where the counter was opened from
         .fullScreenCover(isPresented: $showingFinish, onDismiss: { dismiss() }) {
@@ -253,13 +262,10 @@ struct CounterView: View {
         }
     }
 
-    // Mark the project finished and show the finish screen
-    func finishProject() {
-        project.isFinished = true
-        project.finishedAt = Date.now
-        Haptics.success()
-        saveChanges()
-        showingFinish = true
+    // Every part is made: open the "Put it together" checklist
+    func openAssembly() {
+        Haptics.light()
+        showingAssembly = true
     }
 
     // Back to the counter, past the planned rounds

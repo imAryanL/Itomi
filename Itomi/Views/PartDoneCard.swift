@@ -6,7 +6,7 @@ struct PartDoneCard: View {
     let part: Part
     let nextPart: Part?
     let onNext: () -> Void
-    let onFinish: () -> Void
+    let onPutTogether: () -> Void
     let onKeepCounting: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -34,7 +34,7 @@ struct PartDoneCard: View {
 
             Spacer()
 
-            // Go to the next part, or finish when every part is done
+            // Go to the next part, or start putting it together when every part is done
             Button {
                 if acceptsTaps == false {
                     return
@@ -42,7 +42,7 @@ struct PartDoneCard: View {
                 if nextPart != nil {
                     onNext()
                 } else {
-                    onFinish()
+                    onPutTogether()
                 }
             } label: {
                 Text(buttonTitle)
@@ -80,12 +80,12 @@ struct PartDoneCard: View {
         }
     }
 
-    // "Next: Body" or "Finish project"
+    // "Next: Body" or "Put it together"
     var buttonTitle: String {
         if let nextPart {
             return "Next: \(nextPart.name)"
         }
-        return "Finish project"
+        return "Put it together"
     }
 
     // e.g. "Every round counted" or "All parts done"
@@ -123,7 +123,7 @@ struct PartDoneCard: View {
         if let nextPart {
             message += " Next: \(nextPart.name)."
         } else {
-            message += " All parts done."
+            message += " All parts done. Time to put it together."
         }
         AccessibilityNotification.Announcement(message).post()
     }

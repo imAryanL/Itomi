@@ -10,6 +10,7 @@ struct ProjectDetailView: View {
 
     @State private var showingAddPart = false
     @State private var showingFinish = false
+    @State private var showingAssembly = false
     @State private var pickedPhoto: PhotosPickerItem?
 
     var body: some View {
@@ -36,6 +37,15 @@ struct ProjectDetailView: View {
                     }
                 } header: {
                     ListSectionTitle(text: "Parts")
+                }
+
+                // Shows once every part is made and the project isn't finished yet
+                if project.allPartsDone && project.isFinished == false {
+                    Section {
+                        assemblyRow
+                    } header: {
+                        ListSectionTitle(text: "Putting it together")
+                    }
                 }
             } else if let onlyPart = project.sortedParts.first {
                 Section {
@@ -67,6 +77,14 @@ struct ProjectDetailView: View {
         }
         .sheet(isPresented: $showingAddPart) {
             AddPartSheet(project: project)
+        }
+        // Finishing from the checklist opens the finish screen next
+        .sheet(isPresented: $showingAssembly, onDismiss: {
+            if project.isFinished {
+                showingFinish = true
+            }
+        }) {
+            AssemblySheet(project: project)
         }
         .fullScreenCover(isPresented: $showingFinish) {
             FinishView(project: project)
@@ -138,10 +156,59 @@ struct ProjectDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // Big button at the bottom that opens the counter where you left off
+    // Row that opens the checklist, e.g. "2 of 4 steps done"
+    var assemblyRow: some View {
+        Button {
+            showingAssembly = true
+            Haptics.light()
+        } label: {
+            HStack(spacing: 14) {
+                LoopMark(size: 28, color: .accent)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Every part is made")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    Text(assemblyStatusText)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.tertiary)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    // e.g. "Stuff, sew and finish up" or "2 of 4 steps done"
+    var assemblyStatusText: String {
+        if project.assemblySteps.isEmpty {
+            return "Stuff, sew and finish up"
+        }
+        return "\(project.assemblyStepsDone) of \(project.assemblySteps.count) steps done"
+    }
+
+    // Big button at the bottom: opens the counter where you left off, or the checklist when every part is made
     @ViewBuilder
     var continueButton: some View {
-        if let part = project.currentPart {
+        if project.allPartsDone {
+            Button {
+                showingAssembly = true
+                Haptics.light()
+            } label: {
+                Text("Put it together")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.glassProminent)
+            .controlSize(.extraLarge)
+            .padding(.horizontal)
+        } else if let part = project.currentPart {
             NavigationLink {
                 CounterView(project: project, part: part)
             } label: {

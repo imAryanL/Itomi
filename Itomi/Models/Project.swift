@@ -23,6 +23,10 @@ final class Project {
     @Relationship(deleteRule: .cascade, inverse: \Part.project)
     var parts: [Part] = []
 
+    // Deleting a project also deletes its assembly steps
+    @Relationship(deleteRule: .cascade, inverse: \AssemblyStep.project)
+    var assemblySteps: [AssemblyStep] = []
+
     init(name: String, hookSize: String = "", yarn: String = "", notes: String = "", usesParts: Bool = true, countsInRounds: Bool = true) {
         self.id = UUID()
         self.name = name
@@ -42,6 +46,61 @@ final class Project {
         return parts.sorted { first, second in
             first.sortOrder < second.sortOrder
         }
+    }
+
+    // Assembly steps in the order they were added
+    var sortedAssemblySteps: [AssemblyStep] {
+        return assemblySteps.sorted { first, second in
+            first.sortOrder < second.sortOrder
+        }
+    }
+
+    // MARK: - Putting it together
+
+    // Every part is made, so it's time to sew it all up
+    var allPartsDone: Bool {
+        if usesParts == false || parts.isEmpty {
+            return false
+        }
+        for part in parts {
+            if part.isDone == false {
+                return false
+            }
+        }
+        return true
+    }
+
+    // How many assembly steps are ticked off
+    var assemblyStepsDone: Int {
+        var done = 0
+        for step in assemblySteps {
+            if step.isDone {
+                done += 1
+            }
+        }
+        return done
+    }
+
+    // The usual amigurumi finishing steps, added the first time the checklist opens
+    func addDefaultAssemblySteps() {
+        if assemblySteps.isEmpty == false {
+            return
+        }
+        let defaults = ["Stuff firmly", "Sew the parts together", "Add eyes and embroider the face", "Weave in the ends"]
+        for (index, text) in defaults.enumerated() {
+            assemblySteps.append(AssemblyStep(text: text, sortOrder: index))
+        }
+    }
+
+    // Add one of your own steps at the end
+    func addAssemblyStep(_ text: String) {
+        var nextOrder = 0
+        for step in assemblySteps {
+            if step.sortOrder >= nextOrder {
+                nextOrder = step.sortOrder + 1
+            }
+        }
+        assemblySteps.append(AssemblyStep(text: text, sortOrder: nextOrder))
     }
 
     // e.g. "4.0 mm hook" or "4.0 mm needles"
@@ -141,6 +200,13 @@ final class Project {
 
     // Short progress line for the Projects list, e.g. "Head · Round 5 of 22"
     var progressSummary: String {
+        // All parts made: show how the sewing-up is going
+        if allPartsDone {
+            if assemblySteps.isEmpty {
+                return "Ready to put together"
+            }
+            return "Putting it together · \(assemblyStepsDone) of \(assemblySteps.count)"
+        }
         guard let part = currentPart else {
             return "No parts yet"
         }

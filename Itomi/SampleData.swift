@@ -30,6 +30,14 @@ enum SampleData {
         scarf.parts.first?.lastCountedAt = Calendar.current.date(byAdding: .day, value: -3, to: Date.now)
         modelContext.insert(scarf)
 
+        // One round left on the last part, to show the "Put it together" checklist
+        let teddy = Project(name: "Teddy", hookSize: "3.0 mm", yarn: "Cotton, honey")
+        teddy.photo = photo(symbol: "teddybear.fill", color: .brown)
+        addPart(to: teddy, name: "Head", rounds: 20, at: 20)
+        addPart(to: teddy, name: "Body", rounds: 18, at: 18)
+        addPart(to: teddy, name: "Arm", rounds: 10, at: 9)
+        modelContext.insert(teddy)
+
         // Finished (the Kitty has no photo, to show the loop tile)
         let finished: [(String, String?, Color, Int)] = [
             ("Frog", "tortoise.fill", .green, 3),

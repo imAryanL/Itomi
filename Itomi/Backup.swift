@@ -24,6 +24,15 @@ struct BackupProject: Codable {
     var createdAt: Date
     var finishedAt: Date?
     var parts: [BackupPart]
+    // Optional so backups made before the assembly checklist still open
+    var assemblySteps: [BackupAssemblyStep]?
+}
+
+struct BackupAssemblyStep: Codable {
+    var id: UUID
+    var text: String
+    var isDone: Bool
+    var sortOrder: Int
 }
 
 struct BackupPart: Codable {
@@ -87,12 +96,16 @@ enum Backup {
                 undoStitches: part.undoStitches, undoCopies: part.undoCopies, stitchTargets: targets
             ))
         }
+        var backupSteps: [BackupAssemblyStep] = []
+        for step in project.sortedAssemblySteps {
+            backupSteps.append(BackupAssemblyStep(id: step.id, text: step.text, isDone: step.isDone, sortOrder: step.sortOrder))
+        }
         return BackupProject(
             id: project.id, name: project.name, photo: project.photo, hookSize: project.hookSize,
             yarn: project.yarn, notes: project.notes, usesParts: project.usesParts,
             countsInRounds: project.countsInRounds, usesNeedles: project.usesNeedles,
             isFinished: project.isFinished, createdAt: project.createdAt,
-            finishedAt: project.finishedAt, parts: backupParts
+            finishedAt: project.finishedAt, parts: backupParts, assemblySteps: backupSteps
         )
     }
 
@@ -158,6 +171,16 @@ enum Backup {
                 part.stitchTargets.append(target)
             }
             project.parts.append(part)
+        }
+
+        // Older backups have no assembly steps
+        if let savedSteps = saved.assemblySteps {
+            for savedStep in savedSteps {
+                let step = AssemblyStep(text: savedStep.text, sortOrder: savedStep.sortOrder)
+                step.id = savedStep.id
+                step.isDone = savedStep.isDone
+                project.assemblySteps.append(step)
+            }
         }
         return project
     }

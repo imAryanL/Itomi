@@ -22,6 +22,7 @@ Tick a box when Aryan has seen it working.
 - [x] **7b. Amigurumi touches** (free, what sets Itomi apart):
   "Head done → next: Body" moment when a part hits its last round (loop draws itself, one tap to the next part);
   "Welcome back" line on the counter after a day or more away.
+- [x] **7c. Assembly checklist** (free): when every part is done, a checklist of sewing-up steps (stuff, sew on, embroider face) shows before Finish. Steps editable per project.
 
 ## Phase 2: Pro
 
@@ -30,6 +31,7 @@ Tick a box when Aryan has seen it working.
 - [ ] **10. Lock Screen / Dynamic Island counter** (Live Activity + App Intent).
 - [ ] **11. Themes + app icons.** Pattern viewer only if there's time, else v1.1.
   Idea (Oct 20): Aryan hand-draws alternate icons on the loop theme (double loop, etc.) as Pro icons.
+- [ ] **11b. Make another** (Pro): on a finished project, one tap starts a fresh copy with the same parts, rounds and stitch targets, counters at zero.
 
 ## Phase 3: ship
 
