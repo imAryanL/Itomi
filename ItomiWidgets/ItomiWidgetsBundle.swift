@@ -1,4 +1,4 @@
-// Everything the widget extension shows: for now, just the Lock Screen counter
+// Everything the widget extension shows: the Lock Screen counter and the Control Center button
 
 import SwiftUI
 import WidgetKit
@@ -7,5 +7,6 @@ import WidgetKit
 struct ItomiWidgetsBundle: WidgetBundle {
     var body: some Widget {
         CounterLiveActivity()
+        CounterControl()
     }
 }
