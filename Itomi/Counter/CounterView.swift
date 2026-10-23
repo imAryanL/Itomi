@@ -2,6 +2,7 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct CounterView: View {
     @Environment(\.themeColor) private var themeColor
@@ -19,6 +20,9 @@ struct CounterView: View {
     @State private var showingAssembly = false
     @State private var welcomeBackText: String? = nil
     @AppStorage("keepScreenOn") private var keepScreenOn = true
+    @Environment(\.requestReview) private var requestReview
+    @AppStorage("askedReviewAfterLongSession") private var askedReviewAfterLongSession = false
+    @State private var roundsThisVisit = 0
 
     init(project: Project, part: Part) {
         self.project = project
@@ -122,6 +126,7 @@ struct CounterView: View {
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
+            askForReviewAfterLongSession()
         }
     }
 
@@ -133,6 +138,7 @@ struct CounterView: View {
             part.addRound()
             saveChanges()
             Analytics.roundCounted()
+            roundsThisVisit += 1
 
             if let warning {
                 Analytics.stitchWarningShown()
@@ -373,6 +379,19 @@ struct CounterView: View {
         }
         let when = lastCounted.formatted(.relative(presentation: .named))
         return "Last counted \(when)"
+    }
+
+    // Once ever: after leaving the counter from 10+ rounds, Apple's rating popup (never while counting)
+    func askForReviewAfterLongSession() {
+        if roundsThisVisit < 10 || askedReviewAfterLongSession || project.isFinished {
+            return
+        }
+        askedReviewAfterLongSession = true
+        // Wait until the counter has slid away, so the popup shows over the next screen
+        Task {
+            try? await Task.sleep(for: .seconds(0.8))
+            requestReview()
+        }
     }
 
     // Heavy buzz for a round, or a double buzz when it hits the planned rounds

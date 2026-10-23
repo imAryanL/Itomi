@@ -15,21 +15,21 @@ enum Theme: String, CaseIterable, Identifiable {
         return rawValue.capitalized
     }
 
-    // Each color has a lighter version for dark mode, like plum does
+    // Each color has a slightly lighter version for dark mode, still dark enough for white text on it
     var color: Color {
         switch self {
         case .plum:
             return Color.accent
         case .rose:
-            return Theme.makeColor(light: 0x94485F, dark: 0xD08A9E)
+            return Theme.makeColor(light: 0x94485F, dark: 0xA14E67)
         case .terracotta:
-            return Theme.makeColor(light: 0x9A4A2E, dark: 0xD48F72)
+            return Theme.makeColor(light: 0x9A4A2E, dark: 0xA65032)
         case .sage:
-            return Theme.makeColor(light: 0x4E6A52, dark: 0x93B497)
+            return Theme.makeColor(light: 0x4E6A52, dark: 0x527057)
         case .denim:
-            return Theme.makeColor(light: 0x3D5A78, dark: 0x8AA9CB)
+            return Theme.makeColor(light: 0x3D5A78, dark: 0x496B8F)
         case .charcoal:
-            return Theme.makeColor(light: 0x3A3A40, dark: 0xB4B4BE)
+            return Theme.makeColor(light: 0x3A3A40, dark: 0x686873)
         }
     }
 

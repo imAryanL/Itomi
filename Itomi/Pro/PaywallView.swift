@@ -26,24 +26,20 @@ struct PaywallView: View {
     }
 
     var paywall: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                header
-                featureCard
-                planButtons
-                if let message = proStore.errorMessage {
-                    Text(message)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+        // Centered on the screen, and scrolls when it doesn't fit (small phones, big text)
+        GeometryReader { screen in
+            ScrollView {
+                VStack {
+                    Spacer(minLength: 0)
+                    // Full height always, so no line ever gets cut off with "…"
+                    paywallContent
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
                 }
+                .frame(minHeight: screen.size.height)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
         }
         .background(Color.warmBackground)
-        .safeAreaInset(edge: .bottom) {
-            bottomButtons
-        }
         .overlay(alignment: .topTrailing) {
             Button("Close", systemImage: "xmark") {
                 Haptics.light()
@@ -64,6 +60,25 @@ struct PaywallView: View {
                 await proStore.loadPackages()
             }
         }
+    }
+
+    // Everything on the paywall, top to bottom
+    var paywallContent: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            header
+            featureCard
+            planButtons
+            if let message = proStore.errorMessage {
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            bottomButtons
+                .padding(.top, 4)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 8)
     }
 
     // Plum loop tile next to the title, then the promise that counting stays free
@@ -162,8 +177,6 @@ struct PaywallView: View {
             .foregroundStyle(.secondary)
             .disabled(proStore.isBusy)
         }
-        .padding(.horizontal, 20)
-        .padding(.bottom, 8)
     }
 
     // Restore, Terms and Privacy, each at least 44pt tall

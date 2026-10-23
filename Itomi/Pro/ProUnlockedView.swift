@@ -1,8 +1,11 @@
-// "You're Pro now": a thank-you and what just switched on, right after buying
+// "You're Pro now": a thank-you and what Pro includes, after buying and from Settings
 
 import SwiftUI
 
 struct ProUnlockedView: View {
+    // Settings reuses this screen as a reminder, with its own title and button
+    var title = "You're Pro now"
+    var buttonTitle = "Start counting"
     let onDone: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var drawProgress: CGFloat = 0
@@ -15,7 +18,7 @@ struct ProUnlockedView: View {
                     .frame(width: 84, height: 84)
                     .background(Color.cream, in: RoundedRectangle(cornerRadius: 24))
 
-                Text("You're Pro now")
+                Text(title)
                     .font(.largeTitle)
                     .fontWeight(.heavy)
                 Text("Thank you for supporting Itomi. Here's what's switched on:")
@@ -40,7 +43,7 @@ struct ProUnlockedView: View {
                 Haptics.light()
                 onDone()
             } label: {
-                Text("Start counting")
+                Text(buttonTitle)
                     .font(.headline)
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.accent)

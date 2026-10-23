@@ -39,6 +39,8 @@ Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywal
 ## Phase 3: ship
 
 - [ ] **12. TelemetryDeck, privacy policy, App Store listing, screenshots, submit.**
+  *Done Oct 23:* privacy page (imaryanl.github.io/itomi-privacy), TelemetryDeck (9 signals), Help section in Settings.
+  *Listing must include:* a Terms of Use link to Apple's standard EULA (required for subscriptions), privacy label "usage data, not linked to you".
 
 ## Log
 

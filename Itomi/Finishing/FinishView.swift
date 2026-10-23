@@ -3,11 +3,14 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import StoreKit
 
 struct FinishView: View {
     @Environment(\.themeColor) private var themeColor
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
+    @AppStorage("askedReviewAfterFirstFinish") private var askedReviewAfterFirstFinish = false
 
     let project: Project
     @State private var pickedPhoto: PhotosPickerItem?
@@ -63,6 +66,15 @@ struct FinishView: View {
 
             Button("Done") {
                 Haptics.light()
+                // First project ever finished: a happy moment for Apple's rating popup (once)
+                if askedReviewAfterFirstFinish == false {
+                    askedReviewAfterFirstFinish = true
+                    // Wait until this screen has closed, so the popup shows over the next one
+                    Task {
+                        try? await Task.sleep(for: .seconds(0.8))
+                        requestReview()
+                    }
+                }
                 dismiss()
             }
             .font(.headline)

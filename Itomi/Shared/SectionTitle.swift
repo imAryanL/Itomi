@@ -20,6 +20,6 @@ struct ListSectionTitle: View {
 
     var body: some View {
         SectionTitle(text: text)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+            .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 8, trailing: 0))
     }
 }

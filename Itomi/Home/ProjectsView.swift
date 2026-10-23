@@ -162,7 +162,9 @@ struct ProjectsView: View {
         .sheet(item: $projectToEdit) { project in
             NewProjectSheet(projectToEdit: project)
         }
-        .confirmationDialog(deleteTitle, isPresented: showingDeleteConfirm, titleVisibility: .visible) {
+        // A centered alert, so it never looks like it's pointing at the wrong project
+        .alert(deleteTitle, isPresented: showingDeleteConfirm) {
+            Button("Cancel", role: .cancel) {}
             Button("Delete Project", role: .destructive) {
                 deleteProject()
             }

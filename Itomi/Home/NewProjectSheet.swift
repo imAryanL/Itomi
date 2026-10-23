@@ -166,7 +166,7 @@ struct NewProjectSheet: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 40))
         }
-        .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
+        // No haptic here: a tap gesture on a list row stops the photo picker from opening
         .frame(maxWidth: .infinity)
     }
 

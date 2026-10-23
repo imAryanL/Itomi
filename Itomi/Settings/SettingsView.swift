@@ -10,6 +10,7 @@ struct SettingsView: View {
     @Environment(ProStore.self) private var proStore
     @Query private var allProjects: [Project]
     @State private var showingPaywall = false
+    @State private var showingProDetails = false
 
     @AppStorage("hapticsOn") private var hapticsOn = true
     @AppStorage("keepScreenOn") private var keepScreenOn = true
@@ -52,6 +53,18 @@ struct SettingsView: View {
                     ListSectionTitle(text: "Your data")
                 } footer: {
                     Text("A backup is one file with all your projects and photos. Save it to Files or send it to yourself.")
+                }
+
+                // Privacy policy and a way to reach us (Apple wants both in the app), plus rating
+                Section {
+                    Link("Privacy Policy", destination: URL(string: "https://imaryanl.github.io/itomi-privacy/")!)
+                    Link("Contact us", destination: URL(string: "mailto:itomiapp@gmail.com")!)
+                    // Opens Itomi's App Store page straight to "Write a Review"
+                    Link("Rate Itomi", destination: URL(string: "https://apps.apple.com/app/id6825188650?action=write-review")!)
+                } header: {
+                    ListSectionTitle(text: "About")
+                } footer: {
+                    Text("Questions or ideas? We read every email.")
                 }
 
                 #if DEBUG
@@ -102,6 +115,11 @@ struct SettingsView: View {
             .fullScreenCover(isPresented: $showingPaywall) {
                 PaywallView(openedFrom: "Settings")
             }
+            .fullScreenCover(isPresented: $showingProDetails) {
+                ProUnlockedView(title: "You have Itomi Pro", buttonTitle: "Done") {
+                    showingProDetails = false
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -135,12 +153,12 @@ struct SettingsView: View {
     @ViewBuilder
     var appearanceRow: some View {
         if proStore.isPro {
+            // No haptic here: a tap gesture on a list row stops it from opening
             NavigationLink {
                 AppearanceView()
             } label: {
                 Label("Appearance", systemImage: "paintpalette")
             }
-            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
         } else {
             Button {
                 showingPaywall = true
@@ -168,20 +186,33 @@ struct SettingsView: View {
     @ViewBuilder
     var proRow: some View {
         if proStore.isPro {
-            HStack(spacing: 14) {
-                LoopMark(size: 22, color: .cream)
-                    .frame(width: 36, height: 36)
-                    .background(Color.accent, in: RoundedRectangle(cornerRadius: 10))
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Itomi Pro")
-                        .font(.headline)
+            // Opens the list of what Pro includes, for anyone who forgot
+            Button {
+                showingProDetails = true
+                Haptics.light()
+            } label: {
+                HStack(spacing: 14) {
+                    LoopMark(size: 22, color: .cream)
+                        .frame(width: 36, height: 36)
+                        .background(Color.accent, in: RoundedRectangle(cornerRadius: 10))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Itomi Pro")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.primary)
+                        Text("Thank you for supporting Itomi")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote)
                         .fontWeight(.semibold)
-                    Text("Thank you for supporting Itomi")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.tertiary)
                 }
+                .contentShape(Rectangle())
             }
-            .accessibilityElement(children: .combine)
+            .buttonStyle(.plain)
         } else {
             Button {
                 showingPaywall = true
@@ -216,10 +247,10 @@ struct SettingsView: View {
     @ViewBuilder
     var backupRow: some View {
         if let backupURL {
+            // No haptic here: a tap gesture on this row stops the share sheet from opening
             ShareLink(item: backupURL) {
                 Text("Back up projects")
             }
-            .simultaneousGesture(TapGesture().onEnded { Haptics.light() })
         } else {
             Text("Back up projects")
                 .foregroundStyle(.secondary)

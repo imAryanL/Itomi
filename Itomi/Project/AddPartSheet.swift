@@ -148,18 +148,20 @@ struct AddPartSheet: View {
         }
     }
 
-    // "Stitches per round" with a small plum PRO badge
+    // "Stitches per round", with a small plum PRO badge on the free plan only
     var stitchesHeader: some View {
         HStack {
             ListSectionTitle(text: "Stitches per \(project.countWord.lowercased())")
             Spacer()
-            Text("PRO")
-                .font(.caption)
-                .fontWeight(.heavy)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 2)
-                .background(Color.accent, in: Capsule())
+            if proStore.isPro == false {
+                Text("PRO")
+                    .font(.caption)
+                    .fontWeight(.heavy)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(Color.accent, in: Capsule())
+            }
         }
     }
 
