@@ -127,6 +127,22 @@ final class ProStore {
     }
 
     func hasPro(_ info: CustomerInfo) -> Bool {
+        #if DEBUG
+        // Settings → Testing → Pretend I'm not Pro
+        if UserDefaults.standard.bool(forKey: "pretendFree") {
+            return false
+        }
+        #endif
         return info.entitlements[ProStore.entitlement]?.isActive == true
+    }
+
+    // Check Pro again right now (after the testing switch changes)
+    func refreshPro() async {
+        do {
+            let info = try await Purchases.shared.customerInfo()
+            isPro = hasPro(info)
+        } catch {
+            print("Couldn't check Pro: \(error)")
+        }
     }
 }

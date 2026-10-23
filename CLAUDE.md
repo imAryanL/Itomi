@@ -23,11 +23,11 @@ Not another row counter. Three ideas every feature has to fit:
 - **2 active projects.** Finished ones don't count. Existing projects are never locked. The limit only shows when tapping + (New project).
 
 **Pro** (yearly $12.99 with a free first week, lifetime $29.99, no monthly, RevenueCat; all of Pro ships in 1.0)
-1. Counter everywhere: Lock Screen Live Activity, Dynamic Island, widgets, Control Center, Action Button, Siri (one App Intent)
+1. Counter everywhere: Lock Screen Live Activity, Dynamic Island, Control Center, Action Button, Siri (one App Intent). Home screen widgets: proposed for v1.1, Aryan to confirm (they need the data moved to a shared App Group)
 2. Stitch-count warning: expected stitches per round + alert when a round doesn't add up
 3. Unlimited active projects
-4. Pattern viewer (PDF/photo, row marker); may slip to v1.1
-5. Themes and app icons
+4. Pattern viewer (PDF/photo, row marker): moved to v1.1
+5. Themes and app icons: six muted yarn colors (never bright rainbow colors, white text at least 4.5:1), icons are the same loop in theme colors
 6. Make another: start a fresh copy of a finished project (same parts, rounds and stitch targets, counters at zero)
 
 **Later (v1.1+):** pattern helper (paste a pattern → rounds), knitting-specific features (charts, repeats).
@@ -57,6 +57,7 @@ Not another row counter. Three ideas every feature has to fit:
 ## Project setup
 
 - Xcode project at the repo root, target `Itomi`, bundle `com.aryan.Itomi`.
+- Swift files live in feature folders (App, Models, Onboarding, Home, Project, Counter, Finishing, Pro, Settings, LockScreen, Shared, Testing). Widget target `ItomiWidgets`; files both targets need go in `SharedWithWidget/` (Xcode builds that folder into both).
 - iPhone only, iOS 26 minimum, portrait only. Display name Itomi.
 - Build with the newer Xcode: `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` (xcode-select points at Xcode 26.6, which can't open this project).
 - Storage: SwiftData (added by hand, no template sample code).

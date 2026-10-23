@@ -24,7 +24,7 @@ struct PaywallView: View {
 
     var paywall: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 header
                 featureCard
                 planButtons
@@ -60,24 +60,25 @@ struct PaywallView: View {
         }
     }
 
-    // Plum loop tile, title and the promise that counting stays free
+    // Plum loop tile next to the title, then the promise that counting stays free
     var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            LoopMark(size: 40, color: .cream)
-                .frame(width: 64, height: 64)
-                .background(Color.accent, in: RoundedRectangle(cornerRadius: 18))
-            Text("Itomi Pro")
-                .font(.largeTitle)
-                .fontWeight(.heavy)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 12) {
+                LoopMark(size: 30, color: .cream)
+                    .frame(width: 48, height: 48)
+                    .background(Color.accent, in: RoundedRectangle(cornerRadius: 14))
+                Text("Itomi Pro")
+                    .font(.largeTitle)
+                    .fontWeight(.heavy)
+            }
             Text("Your counter stays free forever. Pro adds the extras.")
                 .foregroundStyle(.secondary)
         }
-        .padding(.top, 8)
     }
 
     // Everything Pro adds (keep this list to features that are in the app)
     var featureCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 10) {
             FeatureLine(icon: "lock.iphone", text: "Counter on your Lock Screen, Dynamic Island and Siri")
             FeatureLine(icon: "exclamationmark.triangle", text: "Stitch-count check on every round")
             FeatureLine(icon: "infinity", text: "Unlimited projects")
@@ -286,6 +287,7 @@ struct FeatureLine: View {
                 .foregroundStyle(Color.accent)
                 .frame(width: 28)
             Text(text)
+                .font(.callout)
         }
     }
 }

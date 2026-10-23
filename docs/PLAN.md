@@ -29,11 +29,12 @@ Tick a box when Aryan has seen it working.
 Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywall lists only features that are built.
 
 - [x] **8. RevenueCat + paywall,** Pro unlocked screen, 2-project limit sheet.
-- [ ] **9. Stitch targets,** "Fill in a sphere" helper, stitch warning.
-- [ ] **10. Lock Screen / Dynamic Island counter** (Live Activity + App Intent).
-- [ ] **11. Themes + app icons.** Pattern viewer only if there's time, else v1.1.
-  Idea (Oct 20): Aryan hand-draws alternate icons on the loop theme (double loop, etc.) as Pro icons.
-- [ ] **11b. Make another** (Pro): on a finished project, one tap starts a fresh copy with the same parts, rounds and stitch targets, counters at zero.
+- [x] **9. Stitch targets,** "Fill in a sphere" helper, stitch warning.
+- [x] **10. Lock Screen / Dynamic Island counter** (Live Activity + App Intent), plus Siri, Action Button and a Control Center button.
+  Home screen widgets: proposed for v1.1 (they need the saved data moved to a shared App Group folder); Aryan to confirm.
+- [x] **11. Themes + app icons.** Six themes (Plum, Rose, Terracotta, Sage, Denim, Charcoal) and seven icons (same loop, theme colors + Cream). Pattern viewer moves to v1.1.
+  Extra icon shapes (double loop, etc.) can be added later as more choices; Claude draws them, Aryan picks.
+- [x] **11b. Make another** (Pro): on a finished project, one tap starts a fresh copy with the same parts, rounds and stitch targets, counters at zero.
 
 ## Phase 3: ship
 
@@ -63,3 +64,11 @@ Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywal
 - **Oct 22, 2026 (milestone 8):** RevenueCat package (5.97.0), ProStore, paywall, 2-project limit sheet, "You're Pro now", Pro row in Settings. Xcode builds use RevenueCat's Test Store (fake purchases, placeholder $79.99/$99.99); release builds use the App Store key. Tested in the simulator: failed, yearly and lifetime purchases, restore, Pro remembered after relaunch. code-reviewer (medium) found 4 must-fixes, all fixed (renewal text, trial only if eligible, double-tap guard, honest error text). Installed on Aryan's iPhone 11.
   - Before submitting: itomiapp.com/privacy must exist (milestone 12); paywall lists features built in 9–11b.
   - Next: milestone 9 (stitch targets, "Fill in a sphere" helper, stitch warning).
+- **Oct 22, 2026 (milestones 9, 10, 11, 11b, evening):** all of Pro for 1.0 is built. Commits 0376b8d (9), c11d176 (files into feature folders), 4e35f56 (10), b9c9f04 (Control Center), fda695a (11b), 6f313bb (11), all pushed.
+  - Built: stitches per round in Add / Edit part with "Fill in a sphere" and a free locked row; amber stitch warning on the counter with Fix stitches (only when stitches were counted); Lock Screen card + Dynamic Island with + and Undo (new ItomiWidgets target, shared files in `SharedWithWidget/`); "Add a round" App Intent for Siri, Shortcuts, Action Button and a Control Center button; Pro-only "Counter on Lock Screen" switch; Make another on the Finished shelf ("Bunny 2"); Settings → Appearance with 6 themes and 7 app icons ("Match app icon", Cream icon).
+  - Fixed: the stitch target now checks the round being worked on (currentRound + 1), not the last finished one.
+  - Checks: code-reviewer (medium) on milestone 10 found no data-loss risk; fixed its points (no counting past a done part, only end this part's card, safer ending). qa-tester passed flows 1–4; its two "major" issues were test-tool problems (it edited the simulator's shared settings, and its quick taps can't flip iOS 26 switches).
+  - Decisions: stitch warning doesn't block counting (Keep going / Fix stitches); Control Center button added as an "only Itomi has it" extra (no competitor has one); themes are muted yarn colors, not rainbow brights, every one at least 6:1 with white text; icons are the same loop in theme colors, no hand drawing needed.
+  - Not tested yet: finishing a project while its card is up, Siri and the Action Button (try on the iPhone 11), dark mode with themes, stitch targets copying in Make another (sample data has none).
+  - Open question: home screen widgets in v1.1 (recommended) or 1.0.
+  - Next: install on the iPhone 11 and try it for real, then milestone 12 (TelemetryDeck, privacy policy, App Store listing, screenshots, submit). Idea to ask TestFlight testers: Apple Watch counter.

@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage("hapticsOn") private var hapticsOn = true
     @AppStorage("keepScreenOn") private var keepScreenOn = true
     @AppStorage("lockScreenCounter") private var lockScreenCounter = true
+    @AppStorage("pretendFree") private var pretendFree = false
 
     @State private var backupURL: URL?
     @State private var showingRestorePicker = false
@@ -60,10 +61,16 @@ struct SettingsView: View {
                         SampleData.addAll(into: modelContext)
                         Haptics.success()
                     }
+                    Toggle("Pretend I'm not Pro", isOn: $pretendFree)
+                        .onChange(of: pretendFree) {
+                            Task {
+                                await proStore.refreshPro()
+                            }
+                        }
                 } header: {
                     ListSectionTitle(text: "Testing")
                 } footer: {
-                    Text("Adds Bunny, Winter scarf, Teddy and 4 finished projects. Your own projects stay as they are.")
+                    Text("Sample projects adds Bunny, Winter scarf, Teddy and 4 finished projects. Your own projects stay as they are.")
                 }
                 #endif
 

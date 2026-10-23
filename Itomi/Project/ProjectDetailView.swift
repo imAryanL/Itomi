@@ -212,6 +212,7 @@ struct ProjectDetailView: View {
                 Text(project.name)
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .lineLimit(2)
                 HStack {
                     if project.hookSize.isEmpty == false {
                         DetailChip(text: project.toolText)

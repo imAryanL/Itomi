@@ -259,20 +259,27 @@ struct CounterView: View {
                     Haptics.light()
                 }
             } label: {
+                // Long names share the space and get cut off with "…"
                 HStack(spacing: 4) {
-                    Text("\(project.name) · \(part.currentCopyName)")
-                        .font(.headline)
-                        .fontWeight(.semibold)
+                    Text(project.name)
+                        .lineLimit(1)
+                    Text("· \(part.currentCopyName)")
+                        .lineLimit(1)
                     Image(systemName: "chevron.down")
                         .font(.caption)
                         .fontWeight(.bold)
                 }
+                .font(.headline)
+                .fontWeight(.semibold)
                 .foregroundStyle(.primary)
+                .frame(maxWidth: 240)
             }
         } else {
             Text(project.name)
                 .font(.headline)
                 .fontWeight(.semibold)
+                .lineLimit(1)
+                .frame(maxWidth: 240)
         }
     }
 
