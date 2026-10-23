@@ -29,6 +29,8 @@ struct ProjectsView: View {
     @State private var projectToDelete: Project?
     @State private var path = NavigationPath()
     @AppStorage("hasFinishedOnboarding") private var hasFinishedOnboarding = false
+    // Testing only: -showOnboarding shows it once per launch
+    static var forcedOnboardingShown = false
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -118,7 +120,18 @@ struct ProjectsView: View {
 
     // Show onboarding once the launch animation is done, unless there are already projects
     func checkOnboarding() {
-        if launchFinished == false || hasFinishedOnboarding {
+        if launchFinished == false {
+            return
+        }
+        #if DEBUG
+        // Testing: launch with -showOnboarding to see it again without deleting any projects
+        if CommandLine.arguments.contains("-showOnboarding") && ProjectsView.forcedOnboardingShown == false {
+            ProjectsView.forcedOnboardingShown = true
+            showingOnboarding = true
+            return
+        }
+        #endif
+        if hasFinishedOnboarding {
             return
         }
         if projectsInProgress.isEmpty && finishedProjects.isEmpty {

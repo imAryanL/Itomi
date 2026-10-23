@@ -21,8 +21,8 @@ struct FirstProjectView: View {
                     Text("What are you working on right now? You can change all of this later.")
                         .foregroundStyle(.secondary)
                 }
-                // Room at the bottom so the row's rounded corner doesn't clip the last line
-                .padding(.bottom, 12)
+                // Room above and below so the row's rounded corners don't clip the first or last letter
+                .padding(.vertical, 12)
             }
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
