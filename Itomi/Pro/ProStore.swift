@@ -88,6 +88,7 @@ final class ProStore {
         do {
             let result = try await Purchases.shared.purchase(package: package)
             if result.userCancelled {
+                Analytics.purchaseCancelled()
                 return false
             }
             isPro = hasPro(result.customerInfo)

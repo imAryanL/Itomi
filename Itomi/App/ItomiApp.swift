@@ -12,6 +12,7 @@ struct ItomiApp: App {
     init() {
         RoundedTitles.apply()
         ProStore.configure()
+        Analytics.start()
     }
 
     var body: some Scene {

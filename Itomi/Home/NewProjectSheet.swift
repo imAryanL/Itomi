@@ -1,4 +1,4 @@
-// Sheet for starting a new project (or editing one): name, hook size, yarn, and how to count
+// Sheet for starting a new project (or editing one): hook or needles, name, size, yarn, and how to count
 
 import SwiftUI
 import SwiftData
@@ -12,6 +12,7 @@ struct NewProjectSheet: View {
     var projectToEdit: Project?
 
     @State private var name = ""
+    @State private var usesNeedles = false
     @State private var hookSize = "4.0 mm"
     @State private var yarn = ""
     @State private var usesParts = true
@@ -30,6 +31,7 @@ struct NewProjectSheet: View {
         self.projectToEdit = projectToEdit
         if let project = projectToEdit {
             _name = State(initialValue: project.name)
+            _usesNeedles = State(initialValue: project.usesNeedles)
             _hookSize = State(initialValue: project.hookSize)
             _yarn = State(initialValue: project.yarn)
             _usesParts = State(initialValue: project.usesParts)
@@ -46,12 +48,24 @@ struct NewProjectSheet: View {
                 }
                 .listRowBackground(Color.clear)
 
+                // Same choice as onboarding: crochet hook or knitting needles
+                Section {
+                    Picker("I'm using a", selection: $usesNeedles) {
+                        Text("Crochet hook").tag(false)
+                        Text("Knitting needles").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+
                 Section {
                     LabeledContent("Name") {
                         TextField("Name", text: $name, prompt: Text("e.g. Bunny"))
                             .multilineTextAlignment(.trailing)
                     }
-                    Picker("Hook size", selection: $hookSize) {
+                    Picker(sizeLabel, selection: $hookSize) {
                         ForEach(hookSizes, id: \.self) { size in
                             Text(size)
                         }
@@ -78,7 +92,10 @@ struct NewProjectSheet: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color.warmBackground)
-            // Tick when a hook size or switch changes
+            // Tick when the hook/needles choice, a size or a switch changes
+            .onChange(of: usesNeedles) {
+                Haptics.light()
+            }
             .onChange(of: hookSize) {
                 Haptics.light()
             }
@@ -153,6 +170,14 @@ struct NewProjectSheet: View {
         .frame(maxWidth: .infinity)
     }
 
+    // "Hook size" or "Needle size"
+    var sizeLabel: String {
+        if usesNeedles {
+            return "Needle size"
+        }
+        return "Hook size"
+    }
+
     // The name without extra spaces at the start or end
     var trimmedName: String {
         return name.trimmingCharacters(in: .whitespaces)
@@ -164,6 +189,7 @@ struct NewProjectSheet: View {
             return
         }
         project.name = trimmedName
+        project.usesNeedles = usesNeedles
         project.hookSize = hookSize
         project.yarn = yarn.trimmingCharacters(in: .whitespaces)
         project.countsInRounds = countsInRounds
@@ -187,8 +213,10 @@ struct NewProjectSheet: View {
             usesParts: usesParts,
             countsInRounds: countsInRounds
         )
+        project.usesNeedles = usesNeedles
         project.photo = photoData
         modelContext.insert(project)
+        Analytics.projectCreated(project, from: "New project")
 
         // No parts: give it one hidden part so the counter always has something to count
         if usesParts == false {

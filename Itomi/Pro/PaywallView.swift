@@ -7,6 +7,9 @@ struct PaywallView: View {
     @Environment(ProStore.self) private var proStore
     @Environment(\.dismiss) private var dismiss
 
+    // Where the paywall was opened from, for the anonymous stats
+    let openedFrom: String
+
     @State private var pickedYearly = true
     @State private var showingUnlocked = false
 
@@ -51,6 +54,9 @@ struct PaywallView: View {
             .buttonBorderShape(.circle)
             .controlSize(.large)
             .padding()
+        }
+        .onAppear {
+            Analytics.paywallShown(from: openedFrom)
         }
         // Make sure prices are there (they load at launch, this covers a slow connection)
         .task {
@@ -176,7 +182,7 @@ struct PaywallView: View {
     }
 
     let termsURL = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
-    let privacyURL = URL(string: "https://itomiapp.com/privacy")!
+    let privacyURL = URL(string: "https://imaryanl.github.io/itomi-privacy/")!
 
     // e.g. "7 days free, then $12.99 a year. Renews every year until you cancel in Settings."
     var disclosure: String {
@@ -255,6 +261,11 @@ struct PaywallView: View {
         Haptics.light()
         let isPro = await proStore.buy(package)
         if isPro {
+            if pickedYearly {
+                Analytics.proBought(plan: "Yearly")
+            } else {
+                Analytics.proBought(plan: "Lifetime")
+            }
             showThankYou()
         }
     }

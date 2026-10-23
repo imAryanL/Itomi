@@ -171,6 +171,7 @@ struct ProjectDetailView: View {
         Haptics.success()
         saveChanges()
         LockScreenCounter.projectEnded(project)
+        Analytics.projectFinished()
         showingFinish = true
     }
 

@@ -89,7 +89,7 @@ struct AddPartSheet: View {
                 }
             }
             .fullScreenCover(isPresented: $showingPaywall) {
-                PaywallView()
+                PaywallView(openedFrom: "Stitches")
             }
         }
     }

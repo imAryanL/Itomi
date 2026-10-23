@@ -100,7 +100,7 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .fullScreenCover(isPresented: $showingPaywall) {
-                PaywallView()
+                PaywallView(openedFrom: "Settings")
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

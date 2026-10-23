@@ -149,6 +149,7 @@ enum LockScreenCounter {
         part.addRound()
         save()
         show(part)
+        Analytics.roundCountedOutsideApp()
         return "\(part.currentCopyName), \(part.roundText)"
     }
 

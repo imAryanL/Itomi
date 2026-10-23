@@ -75,7 +75,7 @@ struct ProjectsView: View {
                 }
             }
             .fullScreenCover(isPresented: $showingPaywall) {
-                PaywallView()
+                PaywallView(openedFrom: "Home")
             }
             .navigationDestination(for: Project.self) { project in
                 ProjectDetailView(project: project)
@@ -111,6 +111,7 @@ struct ProjectsView: View {
         if proStore.isPro || projectsInProgress.count < 2 {
             showingNewProject = true
         } else {
+            Analytics.projectLimitReached()
             showingLimit = true
         }
     }
@@ -201,6 +202,7 @@ struct ProjectsView: View {
         }
         let copy = project.makeFreshCopy(named: nameForCopy(of: project), in: modelContext)
         saveChanges()
+        Analytics.projectCreated(copy, from: "Make another")
         Haptics.success()
         path.append(copy)
     }

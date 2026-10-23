@@ -82,6 +82,7 @@ struct FirstProjectView: View {
         let project = Project(name: trimmedName, hookSize: "4.0 mm", usesParts: false, countsInRounds: countsInRounds)
         project.usesNeedles = usesNeedles
         modelContext.insert(project)
+        Analytics.projectCreated(project, from: "Onboarding")
 
         let onlyPart = Part(name: trimmedName, sortOrder: 0)
         project.parts.append(onlyPart)

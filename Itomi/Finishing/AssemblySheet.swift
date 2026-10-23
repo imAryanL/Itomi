@@ -210,6 +210,7 @@ struct AssemblySheet: View {
         Haptics.success()
         saveChanges()
         LockScreenCounter.projectEnded(project)
+        Analytics.projectFinished()
         dismiss()
     }
 

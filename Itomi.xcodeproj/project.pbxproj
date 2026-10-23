@@ -11,6 +11,7 @@
 		921E0195308AB55800BAD092 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921E0194308AB55800BAD092 /* SwiftUI.framework */; };
 		921E01A2308AB55800BAD092 /* ItomiWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 921E0190308AB55800BAD092 /* ItomiWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		92357900308A000000000001 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 92357900308A000000000002 /* RevenueCat */; };
+		92357900308A000000000011 /* TelemetryDeck in Frameworks */ = {isa = PBXBuildFile; productRef = 92357900308A000000000012 /* TelemetryDeck */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				92357900308A000000000001 /* RevenueCat in Frameworks */,
+				92357900308A000000000011 /* TelemetryDeck in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 			name = Itomi;
 			packageProductDependencies = (
 				92357900308A000000000002 /* RevenueCat */,
+				92357900308A000000000012 /* TelemetryDeck */,
 			);
 			productName = Itomi;
 			productReference = 9235782430882A2600120C8C /* Itomi.app */;
@@ -196,6 +199,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				92357900308A000000000003 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+				92357900308A000000000013 /* XCRemoteSwiftPackageReference "SwiftSDK" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9235782530882A2600120C8C /* Products */;
@@ -544,6 +548,14 @@
 				minimumVersion = 5.97.0;
 			};
 		};
+		92357900308A000000000013 /* XCRemoteSwiftPackageReference "SwiftSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TelemetryDeck/SwiftSDK.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.14.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -551,6 +563,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 92357900308A000000000003 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
 			productName = RevenueCat;
+		};
+		92357900308A000000000012 /* TelemetryDeck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 92357900308A000000000013 /* XCRemoteSwiftPackageReference "SwiftSDK" */;
+			productName = TelemetryDeck;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

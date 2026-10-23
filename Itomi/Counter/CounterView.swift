@@ -132,8 +132,10 @@ struct CounterView: View {
             let warning = checkStitches()
             part.addRound()
             saveChanges()
+            Analytics.roundCounted()
 
             if let warning {
+                Analytics.stitchWarningShown()
                 Haptics.warning()
                 AccessibilityNotification.Announcement(warning.title).post()
             } else {
@@ -329,6 +331,7 @@ struct CounterView: View {
 
     // Go back to the round before, stitches and all, to fix the count
     func fixStitches() {
+        Analytics.stitchWarningAnswered(choice: "Fix stitches")
         part.undo()
         Haptics.medium()
         saveChanges()
@@ -339,6 +342,7 @@ struct CounterView: View {
     }
 
     func hideStitchWarning() {
+        Analytics.stitchWarningAnswered(choice: "Keep going")
         Haptics.light()
         withAnimation {
             stitchWarning = nil
