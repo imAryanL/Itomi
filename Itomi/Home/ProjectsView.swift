@@ -98,6 +98,7 @@ struct ProjectsView: View {
             .onAppear {
                 #if DEBUG
                 SampleData.addIfAsked(into: modelContext, existing: projectsInProgress + finishedProjects)
+                SampleData.addScreenshotSetIfAsked(into: modelContext, existing: projectsInProgress + finishedProjects)
                 #endif
                 checkOnboarding()
             }

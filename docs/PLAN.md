@@ -40,7 +40,9 @@ Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywal
 
 - [ ] **12. TelemetryDeck, privacy policy, App Store listing, screenshots, submit.**
   *Done Oct 23:* privacy page (imaryanl.github.io/itomi-privacy), TelemetryDeck (9 signals), About section in Settings, Apple rating popup, full QA pass.
-  *Still to do:* sandbox purchase on the iPhone 11 (real StoreKit, check the free week shows), App Store listing, screenshots, App Store Connect forms, submit.
+  *Done Oct 23 (evening):* listing drafted (`docs/app-store-listing.md`), 7 screenshots at 6.9" and 6.5" in `~/Desktop/Itomi App Store Screenshots/`, sandbox purchase passed on the iPhone 11 (Release build: $12.99 with the free week, $29.99, yearly bought with the sandbox account).
+  *Submitted Oct 23, 11:15 PM:* version 1.0 (build 1) plus Itomi Pro group, Pro Yearly and Pro Lifetime, in one submission. Name "Itomi: Crochet & Knit Counter", 4+, free, all 175 countries, auto-release after approval. Privacy label: Purchases (App Functionality) and Product Interaction (Analytics), both not linked, no tracking.
+  *Still to do:* wait for App Review (up to 48 hours), answer anything they ask.
   *Listing must include:* a Terms of Use link to Apple's standard EULA (required for subscriptions), privacy label "usage data, not linked to you".
 
 ## Log
