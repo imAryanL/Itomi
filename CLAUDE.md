@@ -19,7 +19,7 @@ Not another row counter. Three ideas every feature has to fit:
 - Parts (Head, Body, Ears ×2), each with its own counter
 - Finish a project → moves to the Finished shelf
 - Assembly checklist: when every part is done, tick off the sewing-up steps (stuff, sew on, embroider face) before finishing
-- Backup / export / restore, always free
+- Backup / export / restore, always free (keep it: deleting the app wipes every project)
 - **2 active projects.** Finished ones don't count. Existing projects are never locked. The limit only shows when tapping + (New project).
 
 **Pro** (yearly $12.99 with a free first week, lifetime $29.99, no monthly, RevenueCat; all of Pro ships in 1.0)
@@ -48,7 +48,7 @@ Not another row counter. Three ideas every feature has to fit:
 ## Code style (Aryan's rules)
 
 - Write code the way Aryan would write it: plain, spelled-out, easy to follow. No clever one-liners, chained tricks, or "senior" architecture.
-- Apple's standard way first: plain SwiftUI + SwiftData, no extra libraries beyond RevenueCat (and TelemetryDeck later).
+- Apple's standard way first: plain SwiftUI + SwiftData, no extra libraries beyond RevenueCat and TelemetryDeck.
 - Small views with obvious names. Clear `if`/`else`, simple loops.
 - Comments: one short line on what a part does (`// Add a round and reset stitches`). Never 1–2 sentence explanations, never on styling lines.
 - One-line header comment at the top of each file saying what it's for.

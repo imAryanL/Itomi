@@ -39,7 +39,8 @@ Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywal
 ## Phase 3: ship
 
 - [ ] **12. TelemetryDeck, privacy policy, App Store listing, screenshots, submit.**
-  *Done Oct 23:* privacy page (imaryanl.github.io/itomi-privacy), TelemetryDeck (9 signals), Help section in Settings.
+  *Done Oct 23:* privacy page (imaryanl.github.io/itomi-privacy), TelemetryDeck (9 signals), About section in Settings, Apple rating popup, full QA pass.
+  *Still to do:* sandbox purchase on the iPhone 11 (real StoreKit, check the free week shows), App Store listing, screenshots, App Store Connect forms, submit.
   *Listing must include:* a Terms of Use link to Apple's standard EULA (required for subscriptions), privacy label "usage data, not linked to you".
 
 ## Log
@@ -74,3 +75,12 @@ Decided Oct 21: full Pro at launch, so 8 through 11b all ship in 1.0. The paywal
   - Not tested yet: finishing a project while its card is up, Siri and the Action Button (try on the iPhone 11), dark mode with themes, stitch targets copying in Make another (sample data has none).
   - Open question: home screen widgets in v1.1 (recommended) or 1.0.
   - Next: install on the iPhone 11 and try it for real, then milestone 12 (TelemetryDeck, privacy policy, App Store listing, screenshots, submit). Idea to ask TestFlight testers: Apple Watch counter.
+
+- **Oct 23, 2026 (iPhone test + milestone 12 start + QA):** tested on the iPhone 11, started milestone 12, full QA pass. Commits e7df834, e2fdc07, b01c676, 13b4688, all pushed.
+  - Tested on the iPhone: Lock Screen card ends when a project finishes, Siri (after the name fix), dark mode with themes, Make another keeps stitch targets. Action Button can't be tested (iPhone 11 has none).
+  - Built: paywall fits small phones and is centered on any screen; long names cut off with "…" (counter title, 2 lines on the project page); Siri alternate names (E Tommy, Eatomi, Itami); hook/needles choice in New/Edit project; Settings → About (Privacy Policy, Contact us, Rate Itomi); Pro row opens "You have Itomi Pro"; Apple rating popup after the first finish and after leaving the counter from 10+ rounds (once each).
+  - Milestone 12: privacy page in public repo imAryanL/itomi-privacy (GitHub Pages, no domain); contact itomiapp@gmail.com (Gmail forwarding didn't take, Aryan added it to the Gmail app instead); TelemetryDeck free plan, org "Aryan Lakhani" (com.aryanlakhani), app Itomi, 9 anonymous signals in Analytics.swift; App Store Apple ID 6825188650.
+  - QA fixed: Back up, Appearance (Pro) and Add photo rows ignored taps (haptic tap gesture on list rows, removed); onboarding title/subtitle clipped by the row corner; dark-mode theme colors too light for white text (now 5.5:1); delete question is a centered alert; PRO badge hidden for Pro users.
+  - Testing tools (Xcode builds only): Settings → Testing → "Pretend I'm not Pro"; launch flag -showOnboarding.
+  - Decisions: keep Backup (deleting the app wipes everything); no custom Terms (Apple's standard EULA, linked in the listing); rating never shows while counting.
+  - Next (Oct 24): 1) icon drawing ideas: Claude mocks up new loop drawings (double loop, yarn ball, heart, hook through a loop), Aryan picks; 2) real prices on the paywall + sandbox purchase on the iPhone 11 (App Store key, sandbox Apple account); 3) App Store Connect: listing (draft first), screenshots, forms, submit. Small leftovers: launch-screen plum #76385E, finish screen "Every round counted" wording.

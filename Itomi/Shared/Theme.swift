@@ -33,14 +33,6 @@ enum Theme: String, CaseIterable, Identifiable {
         }
     }
 
-    // The matching home screen icon in the asset catalog (nil means the main plum icon)
-    var iconName: String? {
-        if self == .plum {
-            return nil
-        }
-        return "AppIcon-\(name)"
-    }
-
     // A color that switches between two hex values for light and dark mode
     static func makeColor(light: Int, dark: Int) -> Color {
         let uiColor = UIColor { traits in

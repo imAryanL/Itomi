@@ -1,4 +1,4 @@
-// Settings → Appearance (Pro): pick a theme color and the matching home screen icon
+// Settings → Appearance (Pro): pick a theme color, the icon drawing and the matching home screen icon
 
 import SwiftUI
 import UIKit
@@ -7,6 +7,7 @@ struct AppearanceView: View {
     @AppStorage("theme") private var themeName = Theme.plum.rawValue
     @AppStorage("matchIcon") private var matchIcon = true
     @AppStorage("creamIcon") private var creamIcon = false
+    @AppStorage("iconDrawing") private var drawingName = IconDrawing.loop.rawValue
 
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
 
@@ -32,6 +33,25 @@ struct AppearanceView: View {
             }
 
             Section {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(IconDrawing.allCases) { drawing in
+                        DrawingChoice(
+                            drawing: drawing,
+                            background: iconBackground,
+                            threadColor: iconLoopColor,
+                            ringColor: pickedTheme.color,
+                            isPicked: drawing == pickedDrawing
+                        ) {
+                            pick(drawing)
+                        }
+                    }
+                }
+                .padding(.vertical, 8)
+            } header: {
+                ListSectionTitle(text: "Icon drawing")
+            }
+
+            Section {
                 Toggle(isOn: $matchIcon) {
                     Text("Match app icon")
                     Text("The home screen icon follows your theme")
@@ -42,7 +62,7 @@ struct AppearanceView: View {
                     updateAppIcon()
                 } label: {
                     HStack(spacing: 12) {
-                        LoopMark(size: 24, color: .accent)
+                        IconDrawingMark(drawing: pickedDrawing, size: 24, color: .accent)
                             .frame(width: 36, height: 36)
                             .background(Color.cream, in: RoundedRectangle(cornerRadius: 9))
                         Text("Cream icon instead")
@@ -90,7 +110,7 @@ struct AppearanceView: View {
             .frame(height: 132)
             .background(pickedTheme.color, in: RoundedRectangle(cornerRadius: 24))
 
-            LoopMark(size: 58, color: iconLoopColor)
+            IconDrawingMark(drawing: pickedDrawing, size: 58, color: iconLoopColor)
                 .frame(width: 96, height: 96)
                 .background(iconBackground, in: RoundedRectangle(cornerRadius: 22))
         }
@@ -99,6 +119,10 @@ struct AppearanceView: View {
 
     var pickedTheme: Theme {
         return Theme(rawValue: themeName) ?? .plum
+    }
+
+    var pickedDrawing: IconDrawing {
+        return IconDrawing(rawValue: drawingName) ?? .loop
     }
 
     // Cream icon: plum loop on cream; otherwise a cream loop on plum or the theme color
@@ -125,14 +149,33 @@ struct AppearanceView: View {
         updateAppIcon()
     }
 
+    func pick(_ drawing: IconDrawing) {
+        drawingName = drawing.rawValue
+        Haptics.light()
+        updateAppIcon()
+    }
+
+    // The icon's asset name from the picks, e.g. "AppIcon-Heart-Sage" (nil means the main plum loop)
+    var wantedIconName: String? {
+        var name = "AppIcon"
+        if let drawingPart = pickedDrawing.assetName {
+            name += "-" + drawingPart
+        }
+        if creamIcon {
+            name += "-Cream"
+        } else if matchIcon && pickedTheme != .plum {
+            name += "-" + pickedTheme.name
+        }
+
+        if name == "AppIcon" {
+            return nil
+        }
+        return name
+    }
+
     // Switch the home screen icon to match the picks (iOS shows its own short note when it changes)
     func updateAppIcon() {
-        var wantedIcon: String? = nil
-        if creamIcon {
-            wantedIcon = "AppIcon-Cream"
-        } else if matchIcon {
-            wantedIcon = pickedTheme.iconName
-        }
+        let wantedIcon = wantedIconName
 
         if UIApplication.shared.alternateIconName == wantedIcon {
             return
@@ -174,6 +217,42 @@ struct ThemeSwatch: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("\(theme.name) theme")
+        .accessibilityAddTraits(isPicked ? .isSelected : [])
+    }
+}
+
+// One icon drawing as a small app icon with its name, ringed when it's picked
+struct DrawingChoice: View {
+    let drawing: IconDrawing
+    let background: Color
+    let threadColor: Color
+    let ringColor: Color
+    let isPicked: Bool
+    let onPick: () -> Void
+
+    var body: some View {
+        Button {
+            onPick()
+        } label: {
+            VStack(spacing: 6) {
+                IconDrawingMark(drawing: drawing, size: 40, color: threadColor)
+                    .frame(width: 60, height: 60)
+                    .background(background, in: RoundedRectangle(cornerRadius: 14))
+                    .padding(4)
+                    .overlay {
+                        if isPicked {
+                            RoundedRectangle(cornerRadius: 17)
+                                .stroke(ringColor, lineWidth: 3)
+                        }
+                    }
+                Text(drawing.name)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(drawing.name) icon")
         .accessibilityAddTraits(isPicked ? .isSelected : [])
     }
 }
